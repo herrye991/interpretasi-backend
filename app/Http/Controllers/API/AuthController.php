@@ -4,45 +4,38 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\User;
+use App\Helpers\ResponseFormatter;
 
 class AuthController extends Controller
 {
     public function signup(Request $request)
     {
         $validatedData = $request->validate([
-            'name' => 'required|max:55',
-            'email' => 'email|required|unique:users',
-            'password' => 'required|confirmed'
+            'email' => 'email|required',
         ]);
-
-        $validatedData['password'] = bcrypt($request->password);
-
-        $user = User::create($validatedData);
-
-        $accessToken = $user->createToken('authToken')->accessToken;
-
-        return response([ 'user' => $user, 'access_token' => $accessToken]);
+        $email = $request->email;
+        $user = User::where('email', $email)->first();
+        if (!is_null($user)) {
+            if (!is_null($user->email_verified_at)) {
+                return ResponseFormatter::error('User already exist.', 403);
+            }
+        } else {
+            $user = User::create([
+                'email' => $email,
+            ]);
+        }
+                
+        return ResponseFormatter::success('Please confirm your email.', 403);
     }
 
     public function signin(Request $request)
     {
-        $loginData = $request->validate([
-            'email' => 'email|required',
-            'password' => 'required'
-        ]);
 
-        if (!auth()->attempt($loginData)) {
-            return response(['message' => 'Invalid Credentials']);
-        }
-
-        $accessToken = auth()->user()->createToken('authToken')->accessToken;
-
-        return response(['user' => auth()->user(), 'access_token' => $accessToken]);
     }
 
     public function signout(Request $request)
     {
-        $token = $request->user('api')->token()->revoke();
-        return ResponseFormatter::success('Signouted', 200);
+        
     }
 }
