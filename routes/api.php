@@ -22,3 +22,4 @@ Route::middleware('auth:passport')->get('/user', function (Request $request) {
 // Auth
 /** Sign Up */
 Route::post('signup', [AuthController::class, 'signup']);
+Route::post('signin/{provider}', [AuthController::class, 'oauth']);

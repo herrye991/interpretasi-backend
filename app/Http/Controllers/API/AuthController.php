@@ -6,9 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Helpers\ResponseFormatter;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
+    public function __construct(Type $var = null) {
+        $this->token = base64_encode(Carbon::now());
+    }
+
     public function signup(Request $request)
     {
         $validatedData = $request->validate([
@@ -37,5 +42,23 @@ class AuthController extends Controller
     public function signout(Request $request)
     {
         
+    }
+
+    public function oauth(Request $request, $provider)
+    {
+        $provider = request()->provider;
+        $email = request()->email;
+        $app_key = request()->app_key;
+        $token = request()->token;
+        $user = User::where('email', $email)->first();
+        return $this->token;
+        if ($provider == 'google') {
+            if (!empty($user)) {
+                // Generate token
+            } else {
+                // Create new user
+            }
+        }
+        return ResponseFormatter::error('Error Provider Parrameters', 500, 500);
     }
 }
