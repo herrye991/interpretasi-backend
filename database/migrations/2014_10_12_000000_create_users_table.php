@@ -19,7 +19,8 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->default('');
-            $table->enum('oauth_google', ['0', '1']);
+            $table->enum('set_password', ['0', '1'])->default('0');
+            $table->text('photo')->default('');
             $table->rememberToken();
             $table->timestamps();
         });

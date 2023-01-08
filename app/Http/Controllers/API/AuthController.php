@@ -7,11 +7,12 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Helpers\ResponseFormatter;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function __construct(Type $var = null) {
-        $this->token = base64_encode(Carbon::now());
+    public function __construct() {
+        $this->token = Carbon::now()->format('Y-m-d H:i:s');
     }
 
     public function signup(Request $request)
@@ -30,7 +31,6 @@ class AuthController extends Controller
                 'email' => $email,
             ]);
         }
-                
         return ResponseFormatter::success('Please confirm your email.', 403);
     }
 
@@ -48,16 +48,30 @@ class AuthController extends Controller
     {
         $provider = request()->provider;
         $email = request()->email;
-        $app_key = request()->app_key;
-        $token = request()->token;
+        $display_name = request()->displayName;
         $user = User::where('email', $email)->first();
-        return $this->token;
         if ($provider == 'google') {
-            if (!empty($user)) {
-                // Generate token
-            } else {
+            if (empty($user)) {
                 // Create new user
+                $name = explode(' ', trim($display_name));
+                if (count($name) == 2) {
+                    $first_name = $name[0];
+                    $last_name = $name[1];
+                } else {
+                    $first_name = $name[0];
+                    $last_name = '';
+                }
+                $user = User::create([
+                    'name' => $first_name . ' ' . $last_name,
+                    'email' => $email,
+                    'password' => Hash::make($email . $this->token),
+                    'provider' => 'google',
+                    'email_verified_at' => Carbon::now(),
+                    'set_password' => '0'
+                ]);
             }
+            $accessToken = $user->createToken('authToken')->accessToken;
+            return ResponseFormatter::success($accessToken, 200, 200);
         }
         return ResponseFormatter::error('Error Provider Parrameters', 500, 500);
     }
