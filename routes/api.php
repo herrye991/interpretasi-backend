@@ -20,6 +20,15 @@ Route::middleware('auth:passport')->get('/user', function (Request $request) {
 });
 
 // Auth
-/** Sign Up */
-Route::post('signup', [AuthController::class, 'signup']);
-Route::post('signin/{provider}', [AuthController::class, 'oauth']);
+Route::group(['middleware' => 'json.only'], function ()
+{
+    /**  Signup */
+    Route::post('signup', [AuthController::class, 'signup']);
+    /**  Google Signin  */
+    Route::post('signin/{provider}', [AuthController::class, 'oauth']);
+    /** Signout*/
+    Route::group(['middleware' => 'auth:api',], function ()
+    {
+        Route::post('signout', [AuthController::class, 'signout']);
+    });
+});
