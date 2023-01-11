@@ -41,7 +41,8 @@ class AuthController extends Controller
 
     public function signout(Request $request)
     {
-        
+        $request->user('api')->token()->revoke();
+        return ResponseFormatter::success('Token revoked', 200);
     }
 
     public function oauth($provider)
