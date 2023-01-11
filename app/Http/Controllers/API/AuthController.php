@@ -44,14 +44,14 @@ class AuthController extends Controller
         
     }
 
-    public function oauth(Request $request, $provider)
+    public function oauth($provider)
     {
         // return $this->token . ' | ' . request()->token;
         $email = request()->email;
         $display_name = request()->displayName;
         $user = User::where('email', $email)->first();
         if ($provider == 'google') {
-            if ($this->token == request()->token) {
+            // if ($this->token == request()->token) {
                 if (empty($user)) {
                     // Create new user
                     $name = explode(' ', trim($display_name));
@@ -73,8 +73,8 @@ class AuthController extends Controller
                 }
                 $accessToken = $user->createToken('authToken')->accessToken;
                 return ResponseFormatter::success($accessToken, 200, 200);
-            }
-            return ResponseFormatter::error('Invalid token!', 403, 403);
+            // }
+            // return ResponseFormatter::error('Invalid token!', 403, 403);
         } else {
             return ResponseFormatter::error('Error Provider Parrameters', 500, 500);
         }
