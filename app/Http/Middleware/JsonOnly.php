@@ -17,10 +17,7 @@ class JsonOnly
      */
     public function handle(Request $request, Closure $next)
     {
-        $acceptHeader = $request->header('Accept');
-        if ($acceptHeader != 'application/json') {
-            return ResponseFormatter::error('Json only!!!', 400, 400);
-        }
+        $request->headers->set('Accept', 'application/json');
         return $next($request);
     }
 }

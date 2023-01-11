@@ -27,7 +27,7 @@ Route::group(['middleware' => 'json.only'], function ()
     /**  Google Signin  */
     Route::post('signin/{provider}', [AuthController::class, 'oauth']);
     /** Signout*/
-    Route::group(['middleware' => 'auth:api',], function ()
+    Route::group(['middleware' => 'auth:api'], function ()
     {
         Route::post('signout', [AuthController::class, 'signout']);
     });
