@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     public function __construct() {
-        $this->token = Carbon::now()->format('Y-m-d H:i:s');
+        $this->token = base64_encode(Carbon::now()->format('Y-m-d H:i:s'));
     }
 
     public function signup(Request $request)
@@ -46,33 +46,37 @@ class AuthController extends Controller
 
     public function oauth(Request $request, $provider)
     {
-        $provider = request()->provider;
+        // return $this->token . ' | ' . request()->token;
         $email = request()->email;
         $display_name = request()->displayName;
         $user = User::where('email', $email)->first();
         if ($provider == 'google') {
-            if (empty($user)) {
-                // Create new user
-                $name = explode(' ', trim($display_name));
-                if (count($name) == 2) {
-                    $first_name = $name[0];
-                    $last_name = $name[1];
-                } else {
-                    $first_name = $name[0];
-                    $last_name = '';
+            if ($this->token == request()->token) {
+                if (empty($user)) {
+                    // Create new user
+                    $name = explode(' ', trim($display_name));
+                    if (count($name) == 2) {
+                        $first_name = $name[0];
+                        $last_name = $name[1];
+                    } else {
+                        $first_name = $name[0];
+                        $last_name = '';
+                    }
+                    $user = User::create([
+                        'name' => $first_name . ' ' . $last_name,
+                        'email' => $email,
+                        'password' => Hash::make($email . $this->token),
+                        'provider' => 'google',
+                        'email_verified_at' => Carbon::now(),
+                        'set_password' => '0'
+                    ]);
                 }
-                $user = User::create([
-                    'name' => $first_name . ' ' . $last_name,
-                    'email' => $email,
-                    'password' => Hash::make($email . $this->token),
-                    'provider' => 'google',
-                    'email_verified_at' => Carbon::now(),
-                    'set_password' => '0'
-                ]);
+                $accessToken = $user->createToken('authToken')->accessToken;
+                return ResponseFormatter::success($accessToken, 200, 200);
             }
-            $accessToken = $user->createToken('authToken')->accessToken;
-            return ResponseFormatter::success($accessToken, 200, 200);
+            return ResponseFormatter::error('Invalid token!', 403, 403);
+        } else {
+            return ResponseFormatter::error('Error Provider Parrameters', 500, 500);
         }
-        return ResponseFormatter::error('Error Provider Parrameters', 500, 500);
     }
 }
