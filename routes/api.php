@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\ArticleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
@@ -27,4 +28,5 @@ Route::middleware('auth:passport')->get('/user', function (Request $request) {
     Route::group(['middleware' => 'auth:api'], function ()
     {
         Route::post('signout', [AuthController::class, 'signout']);
+        Route::apiResource('article', ArticleController::class);
     });
