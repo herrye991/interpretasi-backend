@@ -19,7 +19,7 @@ class Comments extends Migration
             $table->unsignedBigInteger('article_id');
             $table->text('body');
             $table->timestamps();
-            $table->foreign('user)id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('article_id')->references('id')->on('articles');
         });
     }
@@ -31,6 +31,6 @@ class Comments extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('comments');
     }
 }
