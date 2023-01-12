@@ -13,7 +13,15 @@ class Comments extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('comments', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('article_id');
+            $table->text('body');
+            $table->timestamps();
+            $table->foreign('user)id')->references('id')->on('users');
+            $table->foreign('article_id')->references('id')->on('articles');
+        });
     }
 
     /**

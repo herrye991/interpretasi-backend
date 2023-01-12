@@ -13,7 +13,15 @@ class Articles extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->longText('content');
+            $table->text('thumbnail');
+            $table->text('categories');
+            $table->integer('viewers')->default('0');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -23,6 +31,6 @@ class Articles extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('articles');
     }
 }
