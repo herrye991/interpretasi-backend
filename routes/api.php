@@ -18,10 +18,7 @@ use App\Http\Controllers\API\AuthController;
 Route::middleware('auth:passport')->get('/user', function (Request $request) {
     return $request->user();
 });
-
-// Auth
-Route::group(['middleware' => 'json.only'], function ()
-{
+    // Auth
     /**  Signup */
     Route::post('signup', [AuthController::class, 'signup']);
     /**  Google Signin  */
@@ -31,4 +28,3 @@ Route::group(['middleware' => 'json.only'], function ()
     {
         Route::post('signout', [AuthController::class, 'signout']);
     });
-});
