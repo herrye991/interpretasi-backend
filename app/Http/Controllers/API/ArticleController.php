@@ -16,7 +16,15 @@ class ArticleController extends Controller
      */
     public function index(Article $article)
     {
-        $articles = $article->all();
+        $articles = $article->select([
+            'articles.id',
+            'articles.title',
+            'articles.thumbnail',
+            'articles.viewers',
+            'articles.categories',
+            'articles.created_at'
+        ])
+        ->get();
         return ResponseFormatter::success($articles, 200, 200);
     }
 
@@ -39,7 +47,8 @@ class ArticleController extends Controller
      */
     public function show($id)
     {
-        //
+        $article = Article::where('id', $id)->firstOrFail();
+        return ResponseFormatter::success($article, 200, 200);
     }
 
     /**
