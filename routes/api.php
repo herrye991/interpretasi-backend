@@ -28,5 +28,5 @@ Route::middleware('auth:passport')->get('/user', function (Request $request) {
     Route::group(['middleware' => 'auth:api'], function ()
     {
         Route::post('signout', [AuthController::class, 'signout']);
-        Route::apiResource('article', ArticleController::class);
     });
+    Route::apiResource('article', ArticleController::class);

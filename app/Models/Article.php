@@ -11,7 +11,7 @@ class Article extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title', 'content', 'thumbnail', 'is_verified', 'categories', 'viewers'
+        'uniqid', 'title', 'content', 'thumbnail', 'is_verified', 'categories', 'viewers'
     ];
 
     protected $casts = [

@@ -6,6 +6,7 @@ use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Article;
+use App\Http\Resources\Articles\Index as ArticleIndex;
 
 class ArticleController extends Controller
 {
@@ -16,16 +17,8 @@ class ArticleController extends Controller
      */
     public function index(Article $article)
     {
-        $articles = $article->select([
-            'articles.id',
-            'articles.title',
-            'articles.thumbnail',
-            'articles.viewers',
-            'articles.categories',
-            'articles.created_at'
-        ])
-        ->get();
-        return ResponseFormatter::success($articles, 200, 200);
+        $articles = $article->get();
+        return ArticleIndex::collection($articles);
     }
 
     /**
@@ -45,10 +38,10 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($url)
     {
-        $article = Article::where('id', $id)->firstOrFail();
-        return ResponseFormatter::success($article, 200, 200);
+        $article = Article::where('url', $url)->firstOrFail();
+        return $article;
     }
 
     /**
