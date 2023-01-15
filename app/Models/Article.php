@@ -21,10 +21,6 @@ class Article extends Model
     ];
 
     protected $hidden = [
-        'is_verified', 'updated_at', 'categories'
+        'is_verified', 'updated_at'
     ];
-
-    public function category() {
-        
-    }
 }
