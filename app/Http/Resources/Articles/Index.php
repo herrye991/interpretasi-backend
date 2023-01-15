@@ -26,7 +26,7 @@ class Index extends JsonResource
             'url' => URL::current() . '/' . $this->url,
             'thumbnail' => $this->thumbnail,
             'viewers' => $this->viewers,
-            'created_at' => $this->created_at->toDateString()
+            'created_at' => $this->created_at
         ];
         return $response;
     }

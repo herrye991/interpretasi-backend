@@ -41,6 +41,9 @@ class ArticleController extends Controller
     public function show($url)
     {
         $article = Article::where('url', $url)->firstOrFail();
+        $article->update([
+            'viewers' => $article->viewers + 1
+        ]);
         return $article;
     }
 

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Casts\DateToString;
 use App\Casts\StringToArray;
 
 class Article extends Model
@@ -16,6 +17,11 @@ class Article extends Model
 
     protected $casts = [
         'categories' => StringToArray::class,
+        'created_at' => DateToString::class
+    ];
+
+    protected $hidden = [
+        'is_verified', 'updated_at', 'categories'
     ];
 
     public function category() {
