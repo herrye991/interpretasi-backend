@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Casts\Category;
+use App\Casts\StringToArray;
 
 class Article extends Model
 {
@@ -15,7 +15,7 @@ class Article extends Model
     ];
 
     protected $casts = [
-        'categories' => Category::class
+        'categories' => StringToArray::class,
     ];
 
     public function category() {

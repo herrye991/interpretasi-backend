@@ -4,7 +4,7 @@ namespace App\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
-class Category implements CastsAttributes
+class JsonEncode implements CastsAttributes
 {
     /**
      * Cast the given value.
@@ -17,7 +17,7 @@ class Category implements CastsAttributes
      */
     public function get($model, string $key, $value, array $attributes)
     {
-        return array_map('intval', json_decode($value));
+        return json_encode($value);
     }
 
     /**
