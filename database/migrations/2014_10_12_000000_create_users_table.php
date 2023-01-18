@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Carbon\Carbon;
 
 class CreateUsersTable extends Migration
 {
@@ -21,9 +22,18 @@ class CreateUsersTable extends Migration
             $table->string('password')->default('');
             $table->enum('set_password', ['0', '1'])->default('0');
             $table->text('photo')->default('');
+            $table->enum('type', ['0', '1', '2', '3'])->default('0');
             $table->rememberToken();
             $table->timestamps();
         });
+        DB::table('users')->insert([
+            'id' => '1',
+            'name' => 'Herry Mandala',
+            'email' => 'herrymandala1@gmail.com',
+            'password' => Hash::make('herrymandala1@gmail.com'),
+            'email_verified_at' => Carbon::now(),
+            'set_password' => '0'
+        ]);
     }
 
     /**

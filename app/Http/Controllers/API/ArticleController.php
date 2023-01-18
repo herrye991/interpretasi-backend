@@ -6,6 +6,7 @@ use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Article;
+use App\Models\Category;
 use App\Http\Resources\Articles\Index as ArticleIndex;
 
 class ArticleController extends Controller
@@ -17,6 +18,11 @@ class ArticleController extends Controller
      */
     public function index(Article $article)
     {
+        $type = request()->type;
+        if ($type == 'category') {
+            $categories = Category::all();
+            return ResponseFormatter::success($categories);
+        }
         $articles = $article->get();
         return ArticleIndex::collection($articles);
     }
@@ -44,7 +50,7 @@ class ArticleController extends Controller
         $article->update([
             'viewers' => $article->viewers + 1
         ]);
-        return $article;
+        return ResponseFormatter::success($article, 200, 200);
     }
 
     /**

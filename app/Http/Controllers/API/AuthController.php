@@ -68,7 +68,6 @@ class AuthController extends Controller
                         'name' => $first_name . ' ' . $last_name,
                         'email' => $email,
                         'password' => Hash::make($email . $this->token),
-                        'provider' => 'google',
                         'email_verified_at' => Carbon::now(),
                         'set_password' => '0'
                     ]);
