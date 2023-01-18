@@ -23,7 +23,7 @@ class ArticleController extends Controller
             $categories = Category::all();
             return ResponseFormatter::success($categories);
         }
-        $articles = $article->get();
+        $articles = $article->with('comments')->get();
         return ArticleIndex::collection($articles);
     }
 

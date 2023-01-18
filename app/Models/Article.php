@@ -12,7 +12,7 @@ class Article extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'title', 'content', 'thumbnail', 'is_verified', 'categories', 'viewers'
+        'user_id', 'title', 'content', 'thumbnail', 'is_verified', 'categories', 'viewers', 'created_at', 'updated_at'
     ];
 
     protected $casts = [
@@ -23,4 +23,9 @@ class Article extends Model
     protected $hidden = [
         'is_verified', 'updated_at'
     ];
+
+    function comments()
+    {
+        return $this->hasMany('App\Models\Comment');
+    }
 }

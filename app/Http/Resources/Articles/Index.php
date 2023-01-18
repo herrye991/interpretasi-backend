@@ -26,7 +26,8 @@ class Index extends JsonResource
             'url' => URL::current() . '/' . $this->url,
             'thumbnail' => $this->thumbnail,
             'viewers' => $this->viewers,
-            'created_at' => $this->created_at
+            'comments' => count($this->comments),
+            'created_at' => $this->created_at,
         ];
         return $response;
     }
