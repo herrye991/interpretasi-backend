@@ -4,6 +4,7 @@ use App\Http\Controllers\API\ArticleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,18 +16,18 @@ use App\Http\Controllers\API\AuthController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::middleware('auth:passport')->get('/user', function (Request $request) {
-    return $request->user();
-});
-    // Auth
-    /**  Signup */
-    Route::post('signup', [AuthController::class, 'signup']);
-    /**  Google Signin  */
-    Route::post('signin/{provider}', [AuthController::class, 'oauth']);
-    /** Signout*/
-    Route::group(['middleware' => 'auth:api'], function ()
-    {
-        Route::post('signout', [AuthController::class, 'signout']);
+    /** Middleware Json Only */
+    Route::group(['middleware' => 'json.only'], function (){
+        /**  Signup */
+        Route::post('signup', [AuthController::class, 'signup']);
+        /**  Google Signin  */
+        Route::post('signin/{provider}', [AuthController::class, 'oauth']);
+        /** Signout*/
+        /** Midleware Auth */
+        Route::group(['middleware' => 'auth:api'], function ()
+        {
+            Route::apiResource('user', UserController::class)->only(['index']);
+            Route::post('signout', [AuthController::class, 'signout']);
+        });
+        Route::apiResource('article', ArticleController::class);
     });
-    Route::apiResource('article', ArticleController::class);

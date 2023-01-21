@@ -12,6 +12,10 @@ use App\Http\Resources\Articles\Index as ArticleIndex;
 
 class ArticleController extends Controller
 {
+    function __construct()
+    {
+        $this->user = auth('api')->user();
+    }
     /**
      * Display a listing of the resource.
      *
@@ -49,6 +53,7 @@ class ArticleController extends Controller
     {
         $article = Article::where('url', $url)->firstOrFail();
         $type = request()->type;
+        // Comments Index
         if ($type == 'comments') {
             $comments = Comment::where('article_id', $article->id)->with(['user' => function($user)
             {
@@ -56,6 +61,7 @@ class ArticleController extends Controller
             }])->select('comments.*')->get();
             return ResponseFormatter::success($comments, 200, 200);
         }
+        // Article Index
         $article->update([
             'viewers' => $article->viewers + 1
         ]);
@@ -69,9 +75,24 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $url)
     {
-        //
+        $article = Article::where('url', $url)->firstOrFail();
+        $type = request()->type;
+        if ($type == 'comments') {
+            if (!is_null($this->user)) {
+                $request->validate([
+                    'body' => 'required|min:1|max:255'
+                ]);
+                Comment::create([
+                    'user_id' => $this->user->id,
+                    'article_id' => $article->id,
+                    'body' => $request->body
+                ]);
+                return ResponseFormatter::success('Comment Posted', 200, 200);
+            }
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
     }
 
     /**
@@ -80,8 +101,16 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($url)
     {
-        //
+        $id = request()->id;
+        $type = request()->type;
+        if ($type == 'comments') {
+            if (!is_null($this->user)) {
+                $comment = Comment::where('id', $id)->where('user_id', $this->user->id)->firstOrFail();
+                $comment->delete();
+                return ResponseFormatter::success('Comment Deleted', 200, 200);
+            }
+        }
     }
 }
