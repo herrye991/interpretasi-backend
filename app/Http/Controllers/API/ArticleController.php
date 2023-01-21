@@ -9,6 +9,7 @@ use App\Models\Article;
 use App\Models\Category;
 use App\Models\Comment;
 use App\Http\Resources\Articles\Index as ArticleIndex;
+use App\Models\Like;
 
 class ArticleController extends Controller
 {
@@ -58,8 +59,16 @@ class ArticleController extends Controller
             $comments = Comment::where('article_id', $article->id)->with(['user' => function($user)
             {
                 $user->select(['id', 'name', 'photo']);
-            }])->select('comments.*')->get();
+            }])->get();
             return ResponseFormatter::success($comments, 200, 200);
+        }
+        if ($type == 'like') {
+            $like = Like::where('user_id', $this->user->id)->where('article_id', $article->id)->first();
+            if (!is_null($like)) {
+                return ResponseFormatter::success(true, 200, 200);
+            } else {
+                return ResponseFormatter::success(false, 200, 200);
+            }
         }
         // Article Index
         $article->update([
@@ -79,8 +88,8 @@ class ArticleController extends Controller
     {
         $article = Article::where('url', $url)->firstOrFail();
         $type = request()->type;
-        if ($type == 'comments') {
-            if (!is_null($this->user)) {
+        if (!is_null($this->user)) {
+            if ($type == 'comments') {
                 $request->validate([
                     'body' => 'required|min:1|max:255'
                 ]);
@@ -89,10 +98,23 @@ class ArticleController extends Controller
                     'article_id' => $article->id,
                     'body' => $request->body
                 ]);
-                return ResponseFormatter::success('Comment Posted', 200, 200);
+                return ResponseFormatter::success('Comment Added', 200, 200);
             }
-            return response()->json(['message' => 'Unauthenticated'], 401);
+            if ($type == 'like') {
+                $like = Like::where('user_id', $this->user->id)->where('article_id', $article->id)->first();
+                if (is_null($like)) {
+                    Like::create([
+                        'user_id' => $this->user->id,
+                        'article_id' => $article->id
+                    ]);
+                    return ResponseFormatter::success('Favorite Added', 200, 200);
+                } else {
+                    $like->delete();
+                    return ResponseFormatter::success('Favorite Removed', 200, 200);
+                }
+            }
         }
+        return response()->json(['message' => 'Unauthenticated'], 401);
     }
 
     /**
@@ -109,7 +131,7 @@ class ArticleController extends Controller
             if (!is_null($this->user)) {
                 $comment = Comment::where('id', $id)->where('user_id', $this->user->id)->firstOrFail();
                 $comment->delete();
-                return ResponseFormatter::success('Comment Deleted', 200, 200);
+                return ResponseFormatter::success('Comment Removed', 200, 200);
             }
         }
     }
