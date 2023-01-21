@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\Comment;
 use App\Http\Resources\Articles\Index as ArticleIndex;
 
 class ArticleController extends Controller
@@ -47,6 +48,14 @@ class ArticleController extends Controller
     public function show($url)
     {
         $article = Article::where('url', $url)->firstOrFail();
+        $type = request()->type;
+        if ($type == 'comments') {
+            $comments = Comment::where('article_id', $article->id)->with(['user' => function($user)
+            {
+                $user->select(['id', 'name', 'photo']);
+            }])->select('comments.*')->get();
+            return ResponseFormatter::success($comments, 200, 200);
+        }
         $article->update([
             'viewers' => $article->viewers + 1
         ]);

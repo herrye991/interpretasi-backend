@@ -14,6 +14,11 @@ class Comment extends Model
     ];
 
     protected $hidden = [
-        'user_id', 'article_id'
+        'user_id', 'article_id', 'updated_at'
     ];
+
+    function user ()
+    {
+        return $this->belongsTo('App\Models\User');
+    }
 }
