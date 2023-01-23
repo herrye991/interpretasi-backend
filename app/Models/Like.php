@@ -16,9 +16,4 @@ class Like extends Model
     protected $hidden = [
         'user_id', 'updated_at'
     ];
-
-    function article()
-    {
-        return $this->belongsTo('App\Models\Article');
-    }
 }

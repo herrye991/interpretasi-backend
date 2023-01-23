@@ -27,6 +27,7 @@ class Index extends JsonResource
             'thumbnail' => $this->thumbnail,
             'viewers' => $this->viewers,
             'comments' => count($this->comments),
+            'likes' => count($this->likes),
             'created_at' => $this->created_at,
         ];
         return $response;
