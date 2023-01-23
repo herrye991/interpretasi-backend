@@ -51,6 +51,7 @@ class AuthController extends Controller
         // return $this->token . ' | ' . request()->token;
         $email = request()->email;
         $display_name = request()->displayName;
+        $photo = request()->photo;
         $user = User::where('email', $email)->first();
         if ($provider == 'google') {
             // if ($this->token == request()->token) {
@@ -70,6 +71,7 @@ class AuthController extends Controller
                         'password' => Hash::make($email . $this->token),
                         'email_verified_at' => Carbon::now(),
                         'set_password' => '0',
+                        'photo' => $photo
                     ]);
                 }
                 $accessToken = $user->createToken('authToken')->accessToken;
