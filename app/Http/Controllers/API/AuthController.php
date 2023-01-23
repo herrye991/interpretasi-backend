@@ -69,7 +69,8 @@ class AuthController extends Controller
                         'email' => $email,
                         'password' => Hash::make($email . $this->token),
                         'email_verified_at' => Carbon::now(),
-                        'set_password' => '0'
+                        'set_password' => '0',
+                        'created_at' => Carbon::now(),
                     ]);
                 }
                 $accessToken = $user->createToken('authToken')->accessToken;
