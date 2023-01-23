@@ -27,12 +27,8 @@ class Comments extends Migration
                 'user_id' => '1',
                 'article_id' => '1',
                 'body' => 'Jangan pilih puan!!!',
-            ],
-            [
-                'user_id' => '1',
-                'article_id' => '1',
-                'body' => 'Jangan pilih puan!!!',
-            ],
+                'created_at' => Carbon\Carbon::now()
+            ]
         );
     }
 
