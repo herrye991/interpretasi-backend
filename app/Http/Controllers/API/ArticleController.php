@@ -37,17 +37,6 @@ class ArticleController extends Controller
     public function show($url)
     {
         $article = Article::where('url', $url)->firstOrFail();
-        $type = request()->type;
-        // Like Check
-        if ($type == 'like') {
-            $like = Like::where('user_id', $this->user->id)->where('article_id', $article->id)->first();
-            if (!is_null($like)) {
-                return ResponseFormatter::success(true, 200, 200);
-            } else {
-                return ResponseFormatter::success(false, 200, 200);
-            }
-        }
-        // Article Index
         $article->update([
             'viewers' => $article->viewers + 1
         ]);
@@ -56,21 +45,7 @@ class ArticleController extends Controller
 
     public function update(Request $request, $url)
     {
-        $article = Article::where('url', $url)->firstOrFail();
-        $type = request()->type;
-        if ($type == 'like') {
-            $like = Like::where('user_id', $this->user->id)->where('article_id', $article->id)->first();
-            if (is_null($like)) {
-                Like::create([
-                    'user_id' => $this->user->id,
-                    'article_id' => $article->id
-                ]);
-                return ResponseFormatter::success('Favorite Added', 200, 200);
-            } else {
-                $like->delete();
-                return ResponseFormatter::success('Favorite Removed', 200, 200);
-            }
-        }
+        //
     }
 
     public function destroy($url)

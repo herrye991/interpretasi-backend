@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CommentController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\LikeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,8 +31,16 @@ use App\Http\Controllers\API\UserController;
             Route::post('signout', [AuthController::class, 'signout']);
             Route::apiResource('user', UserController::class)->only(['index']);
         });
+        /** Articles */
         Route::apiResource('article', ArticleController::class);
+        /** End Articles */
+        /** Comments */
         Route::get('article/{url}/comment', [CommentController::class, 'index']);
         Route::post('article/{url}/comment', [CommentController::class, 'store']);
         Route::delete('article/{url}/comment/{id}', [CommentController::class, 'destroy']);
+        /** End Comment */
+        /** Likes */
+        Route::get('article/{url}/like', [LikeController::class, 'index']);
+        Route::post('article/{url}/like', [LikeController::class, 'store']);
+        /** End Likes */
     });

@@ -40,22 +40,6 @@ class CommentController extends Controller
         return ResponseFormatter::success('Comment Added', 200, 200);
     }
 
-    public function show($id)
-    {
-        //
-    }
-
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($url, $id)
     {
         $comment = Comment::where('id', $id)->where('user_id', $this->user->id)->firstOrFail();
