@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Article;
 use App\Models\Category;
-use App\Models\Comment;
 use App\Http\Resources\Articles\Index as ArticleIndex;
 use App\Models\Like;
 
@@ -59,9 +58,6 @@ class ArticleController extends Controller
     {
         $article = Article::where('url', $url)->firstOrFail();
         $type = request()->type;
-        if ($type == 'comments') {
-            
-        }
         if ($type == 'like') {
             $like = Like::where('user_id', $this->user->id)->where('article_id', $article->id)->first();
             if (is_null($like)) {
@@ -79,13 +75,7 @@ class ArticleController extends Controller
 
     public function destroy($url)
     {
-        $id = request()->id;
-        $type = request()->type;
-        if ($type == 'comments') {
-            $comment = Comment::where('id', $id)->where('user_id', $this->user->id)->firstOrFail();
-            $comment->delete();
-            return ResponseFormatter::success('Comment Removed', 200, 200);
-        }
+        
     }
 
     /**Categories Function */
