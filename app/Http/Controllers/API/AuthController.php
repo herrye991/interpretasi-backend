@@ -53,6 +53,7 @@ class AuthController extends Controller
         $display_name = request()->displayName;
         $photo = request()->photo;
         $user = User::where('email', $email)->first();
+        $photo = $photo === null ? '' : $photo;
         if ($provider == 'google') {
             // if ($this->token == request()->token) {
                 if (empty($user)) {
