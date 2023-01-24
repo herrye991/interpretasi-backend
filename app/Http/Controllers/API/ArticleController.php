@@ -60,7 +60,21 @@ class ArticleController extends Controller
 
     public function update(Request $request, $url)
     {
-        //
+        $article = Article::where('url', $url)->where('user_id', $this->user->id)->firstOrFail();
+        $request->validate([
+            'title' => 'required',
+            'content' => 'required',
+            'thumbnail' => 'required',
+            'categories' => 'required'
+        ]);
+        $article->update([
+            'title' => $request->title,
+            'content' => $request->content,
+            'thumbnail' => $request->thumbnail,
+            'categories' => $request->categories
+        ]);
+
+        return ResponseFormatter::success('Article Updated', 200, 200);
     }
 
     public function destroy($url)
