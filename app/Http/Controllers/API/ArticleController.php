@@ -25,7 +25,10 @@ class ArticleController extends Controller
     public function index(Article $article)
     {
         $type = request()->type;
-        if ($type == 'category') {
+        if ($type == 'my-articles') {
+            
+        }
+        if ($type == 'categories') {
             $categories = Category::all();
             return ResponseFormatter::success($categories);
         }

@@ -28,4 +28,9 @@ class Article extends Model
     {
         return $this->hasMany('App\Models\Comment');
     }
+
+    function likes()
+    {
+        return $this->hasMany('App\Models\Like');
+    }
 }
