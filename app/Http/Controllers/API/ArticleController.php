@@ -31,7 +31,22 @@ class ArticleController extends Controller
 
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required',
+            'content' => 'required',
+            'thumbnail' => 'required',
+            'categories' => 'required'
+        ]);
+        Article::create([
+            'user_id' => $this->user->id,
+            'url' => strtolower(preg_replace('/[^a-zA-Z0-9-]/', '-', $request->title)) . '-'. uniqid(),
+            'title' => $request->title,
+            'content' => $request->content,
+            'thumbnail' => $request->thumbnail,
+            'categories' => $request->categories
+        ]);
+
+        return ResponseFormatter::success('Article Posted', 200, 200);
     }
 
     public function show($url)
