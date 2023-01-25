@@ -7,7 +7,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CommentController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\LikeController;
-
+use App\Http\Controllers\API\TestController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -18,6 +18,7 @@ use App\Http\Controllers\API\LikeController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+    Route::get('test', [TestController::class, 'index']);
     /** Middleware Json Only */
     Route::group(['middleware' => 'json.only'], function (){
         /**  Signup */

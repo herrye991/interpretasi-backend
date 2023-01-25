@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use App\Casts\DateToString;
 use App\Casts\StringToArray;
 use App\Casts\ArticleUrl;
+use App\Casts\JsonEncode;
+use App\Casts\JsonDecode;
 
 class Article extends Model
 {
@@ -18,6 +20,7 @@ class Article extends Model
 
     protected $casts = [
         'url' => ArticleUrl::class,
+        'content' => JsonDecode::class,
         'categories' => StringToArray::class,
         'created_at' => DateToString::class
     ];
