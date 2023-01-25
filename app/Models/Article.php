@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Casts\DateToString;
 use App\Casts\StringToArray;
+use App\Casts\ArticleUrl;
 
 class Article extends Model
 {
@@ -16,12 +17,13 @@ class Article extends Model
     ];
 
     protected $casts = [
+        'url' => ArticleUrl::class,
         'categories' => StringToArray::class,
         'created_at' => DateToString::class
     ];
 
     protected $hidden = [
-        'is_verified', 'updated_at'
+        'user_id', 'is_verified', 'updated_at'
     ];
 
     function comments()

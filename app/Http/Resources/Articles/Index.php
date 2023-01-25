@@ -23,7 +23,7 @@ class Index extends JsonResource
         $url = URL::current() . '/' . $url . '?uid=' . $this->uniqid;
         $response = [
             'title' => $this->title,
-            'url' => URL::current() . '/' . $this->url,
+            'url' => $this->url,
             'thumbnail' => $this->thumbnail,
             'viewers' => $this->viewers,
             'comments' => count($this->comments),

@@ -37,7 +37,7 @@ class ArticleController extends Controller
             'thumbnail' => 'required',
             'categories' => 'required'
         ]);
-        Article::create([
+        $article = Article::create([
             'user_id' => $this->user->id,
             'url' => strtolower(preg_replace('/[^a-zA-Z0-9-]/', '-', $request->title)) . '-'. uniqid(),
             'title' => $request->title,
@@ -46,7 +46,7 @@ class ArticleController extends Controller
             'categories' => $request->categories
         ]);
 
-        return ResponseFormatter::success('Article Posted', 200, 200);
+        return ResponseFormatter::success($article, 200, 200);
     }
 
     public function show($url)
