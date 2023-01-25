@@ -5,7 +5,7 @@ namespace App\Casts;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use URL;
 
-class ArticleUrl implements CastsAttributes
+class ImageUrl implements CastsAttributes
 {
     /**
      * Cast the given value.
@@ -18,7 +18,7 @@ class ArticleUrl implements CastsAttributes
      */
     public function get($model, string $key, $value, array $attributes)
     {
-        return URL::asset('api/article/'. $value);
+        return URL::asset('/assets/images/thumbnails/' . $value);
     }
 
     /**

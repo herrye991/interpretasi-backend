@@ -8,7 +8,8 @@ use Illuminate\Http\Request;
 use App\Models\Article;
 use App\Models\Category;
 use App\Http\Resources\Articles\Index as ArticleIndex;
-use App\Models\Like;
+use App\Http\Resources\Articles\Show as ArticleShow;
+use Intervention\Image\Facades\Image;
 
 class ArticleController extends Controller
 {
@@ -34,15 +35,25 @@ class ArticleController extends Controller
         $request->validate([
             'title' => 'required',
             'content' => 'required',
-            'thumbnail' => 'required',
+            'image' => 'required',
+            'image.*' => 'image|mimetypes:image/jpeg,image/png,image/jpg',
             'categories' => 'required'
         ]);
+        $url = strtolower(preg_replace('/[^a-zA-Z0-9-]/', '-', $request->title)) . '-'. uniqid();
+        if ($request->hasfile('image')) {
+            $filename = $url . "." . $request->image->getClientOriginalExtension();
+            $request->image->move('assets/images/', $filename);
+            Image::make('assets/images/'.$filename)->resize(600, 400, function ($constraint)
+                {
+                    $constraint->aspectRatio();
+            })->save('assets/images/thumbnails/'.$filename);
+        }
         $article = Article::create([
             'user_id' => $this->user->id,
-            'url' => strtolower(preg_replace('/[^a-zA-Z0-9-]/', '-', $request->title)) . '-'. uniqid(),
+            'url' => $url,
             'title' => $request->title,
             'content' => $request->content,
-            'thumbnail' => $request->thumbnail,
+            'image' => $filename,
             'categories' => $request->categories
         ]);
 
@@ -55,7 +66,7 @@ class ArticleController extends Controller
         $article->update([
             'viewers' => $article->viewers + 1
         ]);
-        return ResponseFormatter::success($article, 200, 200);
+        return new ArticleShow($article);
     }
 
     public function update(Request $request, $url)
@@ -64,8 +75,8 @@ class ArticleController extends Controller
         $request->validate([
             'title' => 'required',
             'content' => 'required',
-            'thumbnail' => 'required',
-            'categories' => 'required'
+            'thumbnail.*' => 'image|mimetypes:image/jpeg,image/png,image/jpg',
+            'categories' => 'required',
         ]);
         $article->update([
             'title' => $request->title,

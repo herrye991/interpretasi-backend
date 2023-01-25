@@ -22,14 +22,6 @@ class Comments extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('article_id')->references('id')->on('articles');
         });
-        DB::table('comments')->insert(
-            [
-                'user_id' => '1',
-                'article_id' => '1',
-                'body' => 'Jangan pilih puan!!!',
-                'created_at' => Carbon\Carbon::now()
-            ]
-        );
     }
 
     /**

@@ -26,15 +26,6 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
             $table->timestamps();
         });
-        DB::table('users')->insert([
-            'id' => '1',
-            'name' => 'Herry Mandala',
-            'email' => 'herrymandala1@gmail.com',
-            'password' => Hash::make('herrymandala1@gmail.com'),
-            'email_verified_at' => Carbon::now(),
-            'set_password' => '0',
-            'created_at' => Carbon::now()
-        ]);
     }
 
     /**

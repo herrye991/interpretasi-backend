@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Casts\DateToString;
 use App\Casts\StringToArray;
 use App\Casts\ArticleUrl;
-use App\Casts\JsonEncode;
+use App\Casts\ImageUrl;
 use App\Casts\JsonDecode;
 
 class Article extends Model
@@ -15,12 +15,12 @@ class Article extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'url', 'title', 'content', 'thumbnail', 'is_verified', 'categories', 'viewers', 'created_at', 'updated_at'
+        'user_id', 'url', 'title', 'content', 'image', 'is_verified', 'categories', 'viewers', 'created_at', 'updated_at'
     ];
 
     protected $casts = [
         'url' => ArticleUrl::class,
-        'content' => JsonDecode::class,
+        'image' => ImageUrl::class,
         'categories' => StringToArray::class,
         'created_at' => DateToString::class
     ];
