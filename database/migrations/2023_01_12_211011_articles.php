@@ -17,7 +17,7 @@ class Articles extends Migration
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('url');
+            $table->string('url')->unique();
             $table->string('title');
             $table->longText('content');
             $table->text('image');
@@ -26,7 +26,7 @@ class Articles extends Migration
             $table->integer('viewers')->default('0');
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

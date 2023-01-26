@@ -57,7 +57,7 @@ class ArticleController extends Controller
             'categories' => $request->categories
         ]);
 
-        return ResponseFormatter::success($article, 200, 200);
+        return new ArticleShow($article);
     }
 
     public function show($url)
@@ -75,22 +75,33 @@ class ArticleController extends Controller
         $request->validate([
             'title' => 'required',
             'content' => 'required',
-            'thumbnail.*' => 'image|mimetypes:image/jpeg,image/png,image/jpg',
-            'categories' => 'required',
+            'image.*' => 'image|mimetypes:image/jpeg,image/png,image/jpg',
+            'categories' => 'required'
         ]);
+        $filename = basename(substr($article->image, 0, strrpos($article->image, '.')));
+        if ($request->hasfile('image')) {
+            $filename = $filename . "." . $request->image->getClientOriginalExtension();
+            $request->image->move('assets/images/', $filename);
+            Image::make('assets/images/'.$filename)->resize(600, 400, function ($constraint)
+                {
+                    $constraint->aspectRatio();
+            })->save('assets/images/thumbnails/'.$filename);
+        }
         $article->update([
             'title' => $request->title,
             'content' => $request->content,
-            'thumbnail' => $request->thumbnail,
+            'image' => $filename,
             'categories' => $request->categories
         ]);
 
-        return ResponseFormatter::success('Article Updated', 200, 200);
+        return new ArticleShow($article);
     }
 
     public function destroy($url)
     {
-        
+        $article = Article::where('url', $url)->where('user_id', $this->user->id)->firstOrFail();
+        $article->delete();
+        return ResponseFormatter::success('Article Deleted!', 200, 200);
     }
 
     /**Categories Function */
