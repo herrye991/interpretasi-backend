@@ -26,8 +26,11 @@ class ArticleController extends Controller
             return $this->categories();
         }
         
-        $articles = $article->with(['comments', 'likes'])->get();
-        return ArticleIndex::collection($articles);
+        $articles = $article->with(['comments', 'likes']);
+        if ($type == 'myArticles') {
+            $articles->where('user_id', $this->user->id);
+        }
+        return ArticleIndex::collection($articles->get());
     }
 
     public function store(Request $request)
@@ -57,7 +60,7 @@ class ArticleController extends Controller
             'categories' => $request->categories
         ]);
 
-        return new ArticleShow($article);
+        return ResponseFormatter::success($article, 200, 200);
     }
 
     public function show($url)
@@ -94,7 +97,7 @@ class ArticleController extends Controller
             'categories' => $request->categories
         ]);
 
-        return new ArticleShow($article);
+        return ResponseFormatter::success($article, 200, 200);
     }
 
     public function destroy($url)
