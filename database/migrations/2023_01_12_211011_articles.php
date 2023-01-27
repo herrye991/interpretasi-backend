@@ -20,6 +20,7 @@ class Articles extends Migration
             $table->string('url')->unique();
             $table->string('title');
             $table->longText('content');
+            $table->longText('original_content');
             $table->text('image');
             $table->enum('is_verified', ['0', '1'])->default('0');
             $table->text('categories');

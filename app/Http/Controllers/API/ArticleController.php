@@ -38,6 +38,7 @@ class ArticleController extends Controller
         $request->validate([
             'title' => 'required',
             'content' => 'required',
+            'original_content' => 'required',
             'image' => 'required',
             'image.*' => 'image|mimetypes:image/jpeg,image/png,image/jpg',
             'categories' => 'required'
@@ -56,6 +57,7 @@ class ArticleController extends Controller
             'url' => $url,
             'title' => $request->title,
             'content' => $request->content,
+            'original_content' => $request->original_content,
             'image' => $filename,
             'categories' => $request->categories
         ]);
@@ -78,6 +80,7 @@ class ArticleController extends Controller
         $request->validate([
             'title' => 'required',
             'content' => 'required',
+            'original_content' => 'required',
             'image.*' => 'image|mimetypes:image/jpeg,image/png,image/jpg',
             'categories' => 'required'
         ]);
@@ -93,6 +96,7 @@ class ArticleController extends Controller
         $article->update([
             'title' => $request->title,
             'content' => $request->content,
+            'original_content' => $request->original_content,
             'image' => $filename,
             'categories' => $request->categories
         ]);
