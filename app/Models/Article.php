@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Casts\DateToString;
 use App\Casts\StringToArray;
 use App\Casts\ArticleUrl;
+use App\Casts\Categories;
 use App\Casts\ImageUrl;
 use App\Casts\JsonDecode;
 
@@ -21,7 +22,7 @@ class Article extends Model
     protected $casts = [
         'url' => ArticleUrl::class,
         'image' => ImageUrl::class,
-        'categories' => StringToArray::class,
+        'categories' => Categories::class,
         'created_at' => DateToString::class
     ];
 

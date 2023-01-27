@@ -3,8 +3,9 @@
 namespace App\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use App\Models\Category;
 
-class StringToArray implements CastsAttributes
+class Categories implements CastsAttributes
 {
     /**
      * Cast the given value.
@@ -17,7 +18,7 @@ class StringToArray implements CastsAttributes
      */
     public function get($model, string $key, $value, array $attributes)
     {
-        return array_map('intval', json_decode($value));
+        return Category::whereIn('id', array_map('intval', json_decode($value)))->get();
     }
 
     /**
