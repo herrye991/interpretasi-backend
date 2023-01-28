@@ -31,6 +31,7 @@ use App\Http\Controllers\API\TestController;
         {
             Route::post('signout', [AuthController::class, 'signout']);
             Route::apiResource('user', UserController::class)->only(['index']);
+            Route::get('user/my-articles', [UserController::class, 'myArticles']);
         });
         /** Articles */
         Route::apiResource('article', ArticleController::class);

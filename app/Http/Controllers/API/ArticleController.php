@@ -59,7 +59,8 @@ class ArticleController extends Controller
             'content' => $request->content,
             'original_content' => $request->original_content,
             'image' => $filename,
-            'categories' => $request->categories
+            'categories' => $request->categories,
+            'status' => 'drafted'
         ]);
 
         return ResponseFormatter::success($article, 200, 200);
@@ -98,7 +99,8 @@ class ArticleController extends Controller
             'content' => $request->content,
             'original_content' => $request->original_content,
             'image' => $filename,
-            'categories' => $request->categories
+            'categories' => $request->categories,
+            'status' => 'drafted'
         ]);
 
         return ResponseFormatter::success($article, 200, 200);
