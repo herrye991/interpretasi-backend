@@ -3,7 +3,6 @@
 namespace App\Http\Resources\Articles;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use URL;
 
 class Index extends JsonResource
 {
@@ -15,13 +14,7 @@ class Index extends JsonResource
      */
     public function toArray($request)
     {
-        // URL GENERATION
-        $url = str_replace(' ', '-', $this->title);
-        $url = preg_replace('/[^A-Za-z0-9\-]/', '', $url);
-        $url = preg_replace('/-+/', '-', $url);
-        $url = strtolower($url);
-        $url = URL::current() . '/' . $url . '?uid=' . $this->uniqid;
-        $response = [
+        return [
             'title' => $this->title,
             'url' => $this->url,
             'image' => $this->image,
@@ -30,6 +23,5 @@ class Index extends JsonResource
             'likes' => count($this->likes),
             'created_at' => $this->created_at,
         ];
-        return $response;
     }
 }

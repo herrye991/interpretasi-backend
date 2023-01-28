@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Article;
 use App\Models\Category;
-use App\Http\Resources\Articles\Index as ArticleIndex;
+use App\Http\Resources\Articles\IndexCollection as ArticleIndex;
 use App\Http\Resources\Articles\Show as ArticleShow;
 use Intervention\Image\Facades\Image;
 
@@ -30,7 +30,7 @@ class ArticleController extends Controller
         if ($type == 'myArticles') {
             $articles->where('user_id', $this->user->id);
         }
-        return ArticleIndex::collection($articles->get());
+        return new ArticleIndex($articles->paginate(5));
     }
 
     public function store(Request $request)
