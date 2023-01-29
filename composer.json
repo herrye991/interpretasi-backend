@@ -13,6 +13,7 @@
         "laravel/passport": "^10.4",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
+        "sven/artisan-view": "^3.4",
         "symfony/http-client": "^5.4",
         "symfony/mailgun-mailer": "^5.4"
     },
