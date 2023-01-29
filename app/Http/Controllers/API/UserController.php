@@ -24,19 +24,19 @@ class UserController extends Controller
         $status = request()->status;
         $articles = $article->with(['comments', 'likes'])->where('user_id', $this->user->id);
         if ($status == 'drafted') {
-            $articles->where('status', 'drafted');
+            $articles = $articles->where('status', 'drafted');
         }
         if ($status == 'moderated') {
-            $articles->where('status', 'moderated');
+            $articles = $articles->where('status', 'moderated');
         }
         if ($status == 'published') {
-            $articles->where('status', 'published');
+            $articles = $articles->where('status', 'published');
         }
         if ($status == 'rejected') {
-            $articles->where('status', 'rejected');
+            $articles = $articles->where('status', 'rejected');
         }
         if ($status == 'banned') {
-            $articles->where('status', 'banned');
+            $articles = $articles->where('status', 'banned');
         }
         return new ArticleIndex($articles->paginate(5));
     }
