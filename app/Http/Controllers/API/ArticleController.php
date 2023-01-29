@@ -23,6 +23,7 @@ class ArticleController extends Controller
     {
         $type = request()->type;
         $find = request()->find;
+        $category = request()->category;
         if ($type == 'categories') {
             return $this->categories();
         }
@@ -30,6 +31,9 @@ class ArticleController extends Controller
         $articles = $article->where('status', 'published')->with(['comments', 'likes']);
         if (!is_null($find)) {
             $articles = $articles->where('title', 'LIKE', "%{$find}%");
+        }
+        if (!is_null($category)) {
+            $articles = $articles->where('categories', 'LIKE', "%{$category}%");
         }
         return new ArticleIndex($articles->paginate(5));
     }
