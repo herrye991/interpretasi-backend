@@ -22,13 +22,14 @@ class ArticleController extends Controller
     public function index(Article $article)
     {
         $type = request()->type;
+        $find = request()->find;
         if ($type == 'categories') {
             return $this->categories();
         }
         
-        $articles = $article->with(['comments', 'likes']);
-        if ($type == 'myArticles') {
-            $articles->where('user_id', $this->user->id);
+        $articles = $article->where('status', 'published')->with(['comments', 'likes']);
+        if (!is_null($find)) {
+            $articles = $articles->where('title', 'LIKE', "%{$find}%");
         }
         return new ArticleIndex($articles->paginate(5));
     }
