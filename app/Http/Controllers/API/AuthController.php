@@ -16,6 +16,7 @@ class AuthController extends Controller
 {
     public function __construct() {
         $this->now = Carbon::now();
+        $this->token = bin2hex(base64_encode($this->now));
     }
 
     public function signup(Request $request)
@@ -34,16 +35,15 @@ class AuthController extends Controller
                 'email' => $email,
             ]);
         }
-        $token = bin2hex(base64_encode($this->now));
         VerifyData::create([
             'user_id' => $user->id,
-            'token' => $token
+            'token' => $this->token
         ]);
         $details = [
             'title' => 'Interpretasi ID',
             'body' => [
                 'Terima kasih telah mendaftar di Interpretasi ID! Kamu harus membuka tautan ini dalam 1 hari sejak pendaftaran untuk mengaktifkan akun.',
-                'https://interpretasi.id/account/accept/'.$this->now->format('Y-m-d').'/'.$token,
+                'https://interpretasi.id/account/accept/'.$this->now->format('Y-m-d').'/'.$this->token,
                 'Bersenang-senang, dan jangan ragu untuk menghubungi kami dengan umpan balik Anda.'
             ],
         ];
@@ -72,7 +72,6 @@ class AuthController extends Controller
         $user = User::where('email', $email)->first();
         $photo = $photo === null ? '' : $photo;
         if ($provider == 'google') {
-            // if ($this->token == request()->token) {
                 if (empty($user)) {
                     // Create new user
                     $name = explode(' ', trim($display_name));
@@ -94,8 +93,6 @@ class AuthController extends Controller
                 }
                 $accessToken = $user->createToken('authToken')->accessToken;
                 return ResponseFormatter::success($accessToken, 200, 200);
-            // }
-            // return ResponseFormatter::error('Invalid token!', 403, 403);
         } else {
             return ResponseFormatter::error('Error Provider Parrameters', 500, 500);
         }
