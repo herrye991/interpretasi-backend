@@ -87,7 +87,7 @@ class ArticleController extends Controller
             'image.*' => 'image|mimetypes:image/jpeg,image/png,image/jpg',
             'categories' => 'required'
         ]);
-        $filename = basename(substr($article->image, 0, strrpos($article->image, '.')));
+        $filename = basename($article->image);
         if ($request->hasfile('image')) {
             $filename = $filename . "." . $request->image->getClientOriginalExtension();
             $request->image->move('assets/images/', $filename);
