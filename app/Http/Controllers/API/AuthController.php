@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Verify;
+use App\Helpers\Curl;
 
 class AuthController extends Controller
 {
@@ -65,7 +66,8 @@ class AuthController extends Controller
 
     public function oauth($provider)
     {
-        $token = base64_encode($this->now->timezone('UTC')->format('Y-m-d H:i'));
+        $curl = Curl::get('https://worldtimeapi.org/api/timezone/Asia/Jakarta', []);
+        $token = base64_encode(Carbon::createFromTimestamp($curl['unixtime'])->toDateTimeString());;
         $email = request()->email;
         $display_name = request()->displayName;
         $photo = request()->photo;
@@ -95,7 +97,7 @@ class AuthController extends Controller
                 $accessToken = $user->createToken('authToken')->accessToken;
                 return ResponseFormatter::success($accessToken, 200, 200);
             } else {
-                return ResponseFormatter::error('Invalid Token!', 500, 500);
+                return ResponseFormatter::error('Invalid Token! ' . '(' . $token . ')' . '(' . request()->token . ')', 500, 500);
             }
         } else {
             return ResponseFormatter::error('Invalid Provider!', 500, 500);
