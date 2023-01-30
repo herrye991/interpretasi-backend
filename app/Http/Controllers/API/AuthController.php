@@ -6,18 +6,21 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Helpers\ResponseFormatter;
+use App\Models\Verify as VerifyData;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Verify;
 
 class AuthController extends Controller
 {
     public function __construct() {
-        $this->token = base64_encode(Carbon::now()->format('Y-m-d H:i:s'));
+        $this->now = Carbon::now();
     }
 
     public function signup(Request $request)
     {
-        $validatedData = $request->validate([
+        $request->validate([
             'email' => 'email|required',
         ]);
         $email = $request->email;
@@ -31,6 +34,20 @@ class AuthController extends Controller
                 'email' => $email,
             ]);
         }
+        $token = bin2hex(base64_encode($this->now));
+        VerifyData::create([
+            'user_id' => $user->id,
+            'token' => $token
+        ]);
+        $details = [
+            'title' => 'Interpretasi ID',
+            'body' => [
+                'Terima kasih telah mendaftar di Interpretasi ID! Kamu harus membuka tautan ini dalam 1 hari sejak pendaftaran untuk mengaktifkan akun.',
+                'https://interpretasi.id/account/accept/'.$this->now->format('Y-m-d').'/'.$token,
+                'Bersenang-senang, dan jangan ragu untuk menghubungi kami dengan umpan balik Anda.'
+            ],
+        ];
+        Mail::to($request->email)->send(new Verify($details));
         return ResponseFormatter::success('Please confirm your email.', 403);
     }
 
