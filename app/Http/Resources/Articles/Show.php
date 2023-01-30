@@ -19,7 +19,6 @@ class Show extends JsonResource
             'url' => $this->url,
             'image' => $this->image,
             'content' => $this->content,
-            'original_content' => $this->original_content,
             'categories' => $this->categories,
             'viewers' => $this->viewers,
             'comments' => count($this->comments),
