@@ -53,7 +53,7 @@ class AuthController extends Controller
 
     public function signin(Request $request)
     {
-
+        
     }
 
     public function signout(Request $request)
@@ -65,13 +65,14 @@ class AuthController extends Controller
 
     public function oauth($provider)
     {
-        // return $this->token . ' | ' . request()->token;
+        $token = base64_encode($this->now->timezone('UTC')->format('Y-m-d H:i'));
         $email = request()->email;
         $display_name = request()->displayName;
         $photo = request()->photo;
         $user = User::where('email', $email)->first();
         $photo = $photo === null ? '' : $photo;
         if ($provider == 'google') {
+            if ($token == request()->token) {
                 if (empty($user)) {
                     // Create new user
                     $name = explode(' ', trim($display_name));
@@ -93,8 +94,11 @@ class AuthController extends Controller
                 }
                 $accessToken = $user->createToken('authToken')->accessToken;
                 return ResponseFormatter::success($accessToken, 200, 200);
+            } else {
+                return ResponseFormatter::error('Invalid Token!', 500, 500);
+            }
         } else {
-            return ResponseFormatter::error('Error Provider Parrameters', 500, 500);
+            return ResponseFormatter::error('Invalid Provider!', 500, 500);
         }
     }
 }
