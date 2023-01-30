@@ -24,6 +24,7 @@ class UserController extends Controller
                 ]);
                 return 'Your account has been verified. You can close this window.';
             }
+            $verify->delete();
             return 'Token expired!';
         }
         return 'URL not found!';
