@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Article;
 use App\Http\Resources\Articles\IndexCollection as ArticleIndex;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -55,7 +56,7 @@ class UserController extends Controller
             ]);
             return ResponseFormatter::success('Password Added!', 200, 200);
         }
-        return ResponseFormatter::error('Password already added!');
+        return ResponseFormatter::error('Password already added!', 403, 403);
     }
 
     public function changePassword(Request $request)

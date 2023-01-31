@@ -36,8 +36,8 @@ use App\Http\Controllers\API\TestController;
             Route::post('signout', [AuthController::class, 'signout']);
             Route::apiResource('user', UserController::class)->only(['index']);
             Route::get('user/my-articles', [UserController::class, 'myArticles']);
-            Route::get('user/set_password', [UserController::class, 'setPassword']);
-            Route::get('user/change_password', [UserController::class, 'changePassword']);
+            Route::post('user/set_password', [UserController::class, 'setPassword']);
+            Route::post('user/change_password', [UserController::class, 'changePassword']);
             Route::get('user/check', [UserController::class, 'check']);
         });
         /** Articles */
