@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\API\ArticleController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CommentController;
@@ -29,29 +28,33 @@ use App\Http\Controllers\API\TestController;
         Route::post('signup', [AuthController::class, 'signup']);
         /** Signin */
         Route::post('signin', [AuthController::class, 'signin']);
+        /** Signout*/
+        Route::post('signout', [AuthController::class, 'signout']);
         /** Google Signin  */
         Route::post('signin/{provider}', [AuthController::class, 'oauth']);
-        /** Signout*/
         /** Midleware Auth */
         Route::group(['middleware' => 'auth:api', 'middleware' => 'email-verify.checker'], function ()
         {
-            Route::post('signout', [AuthController::class, 'signout']);
-            Route::apiResource('user', UserController::class)->only(['index']);
-            Route::get('user/my-articles', [UserController::class, 'myArticles']);
-            Route::post('user/set_password', [UserController::class, 'setPassword']);
-            Route::post('user/change_password', [UserController::class, 'changePassword']);
-            Route::get('user/check', [UserController::class, 'check']);
+            /** User */
+            Route::prefix('user')->group(function () {
+                Route::get('/', [UserController::class, 'index']);
+                Route::get('articles', [UserController::class, 'myArticles']);
+                Route::get('check', [UserController::class, 'check']);
+                Route::prefix('password')->group(function () {
+                    Route::post('add', [UserController::class, 'setPassword']);
+                    Route::post('change', [UserController::class, 'changePassword']);
+                });
+            });
         });
-        /** Articles */
+        /** Article */
         Route::apiResource('article', ArticleController::class);
-        /** End Articles */
-        /** Comments */
-        Route::get('article/{url}/comment', [CommentController::class, 'index']);
-        Route::post('article/{url}/comment', [CommentController::class, 'store']);
-        Route::delete('article/{url}/comment/{id}', [CommentController::class, 'destroy']);
-        /** End Comment */
-        /** Likes */
-        Route::get('article/{url}/like', [LikeController::class, 'index']);
-        Route::post('article/{url}/like', [LikeController::class, 'store']);
-        /** End Likes */
+        Route::prefix('article')->group(function () {
+            /** Artticle/Comment */
+            Route::get('{url}/comment', [CommentController::class, 'index']);
+            Route::post('{url}/comment', [CommentController::class, 'store']);
+            Route::delete('{url}/comment/{id}', [CommentController::class, 'destroy']);
+            /** Article/Like */
+            Route::get('{url}/like', [LikeController::class, 'index']);
+            Route::post('{url}/like', [LikeController::class, 'store']);
+        });
     });
