@@ -19,6 +19,10 @@ use App\Http\Controllers\API\TestController;
 |
 */
     Route::get('test', [TestController::class, 'index']);
+    Route::get('datetime', function ()
+    {
+        return response()->json([Carbon\Carbon::now()->format('Y-m-d H:i')]);
+    });
     /** Middleware Json Only */
     Route::group(['middleware' => 'json.only'], function (){
         /**  Signup */
@@ -27,11 +31,14 @@ use App\Http\Controllers\API\TestController;
         Route::post('signin/{provider}', [AuthController::class, 'oauth']);
         /** Signout*/
         /** Midleware Auth */
-        Route::group(['middleware' => 'auth:api'], function ()
+        Route::group(['middleware' => 'auth:api', 'middleware' => 'email-verify.checker'], function ()
         {
             Route::post('signout', [AuthController::class, 'signout']);
             Route::apiResource('user', UserController::class)->only(['index']);
             Route::get('user/my-articles', [UserController::class, 'myArticles']);
+            Route::get('user/set_password', [UserController::class, 'setPassword']);
+            Route::get('user/change_password', [UserController::class, 'changePassword']);
+            Route::get('user/check', [UserController::class, 'check']);
         });
         /** Articles */
         Route::apiResource('article', ArticleController::class);

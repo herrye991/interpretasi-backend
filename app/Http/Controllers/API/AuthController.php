@@ -66,8 +66,8 @@ class AuthController extends Controller
 
     public function oauth($provider)
     {
-        $curl = Curl::get('https://worldtimeapi.org/api/timezone/Asia/Jakarta', []);
-        $token = base64_encode(Carbon::createFromTimestamp($curl['unixtime'])->toDateTimeString());;
+        $date = $this->now->format('Y-m-d H:i');
+        $token = hash('sha256', $date);
         $email = request()->email;
         $display_name = request()->displayName;
         $photo = request()->photo;
@@ -93,11 +93,17 @@ class AuthController extends Controller
                         'set_password' => '0',
                         'photo' => $photo
                     ]);
+                } else {
+                    if (is_null($user->email_verified_at)) {
+                        $user->update([
+                            'email_verified_at' => Carbon::now()
+                        ]);
+                    }
                 }
                 $accessToken = $user->createToken('authToken')->accessToken;
                 return ResponseFormatter::success($accessToken, 200, 200);
             } else {
-                return ResponseFormatter::error('Invalid Token! ' . '(' . $token . ')' . '(' . request()->token . ')', 500, 500);
+                return ResponseFormatter::error('Invalid Token! {Server Token : '.$token.'}{Device Token : '.request()->token.'}');
             }
         } else {
             return ResponseFormatter::error('Invalid Provider!', 500, 500);

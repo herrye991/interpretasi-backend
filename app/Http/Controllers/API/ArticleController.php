@@ -35,7 +35,7 @@ class ArticleController extends Controller
         if (!is_null($category)) {
             $articles = $articles->where('categories', 'LIKE', "%{$category}%");
         }
-        return new ArticleIndex($articles->paginate(5));
+        return new ArticleIndex($articles->orderBy('created_at', 'desc')->paginate(5));
     }
 
     public function store(Request $request)
