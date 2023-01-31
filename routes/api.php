@@ -25,9 +25,11 @@ use App\Http\Controllers\API\TestController;
     });
     /** Middleware Json Only */
     Route::group(['middleware' => 'json.only'], function (){
-        /**  Signup */
+        /** Signup */
         Route::post('signup', [AuthController::class, 'signup']);
-        /**  Google Signin  */
+        /** Signin */
+        Route::post('signin', [AuthController::class, 'signin']);
+        /** Google Signin  */
         Route::post('signin/{provider}', [AuthController::class, 'oauth']);
         /** Signout*/
         /** Midleware Auth */

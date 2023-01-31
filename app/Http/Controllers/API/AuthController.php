@@ -11,7 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Verify;
-use App\Helpers\Curl;
+use Auth;
 
 class AuthController extends Controller
 {
@@ -54,7 +54,22 @@ class AuthController extends Controller
 
     public function signin(Request $request)
     {
+        $request->validate([
+            'email' => 'email|required',
+            'password' => 'required'
+        ]);
+                
+        $user = User::where('email', $request->email)->first();
+        if (empty($user)) {
+            return ResponseFormatter::error('User not found!', 404, 404);
+        }
+        $credentials = Request(['email', 'password']);
+        if (!Auth::attempt($credentials)) {
+            return ResponseFormatter::error('Wrong password!', 403, 403);
+        }
         
+        $accessToken = $user->createToken('authToken')->accessToken;        
+        return ResponseFormatter::success($accessToken, 200, 200);
     }
 
     public function signout(Request $request)
