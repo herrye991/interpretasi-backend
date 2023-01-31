@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
+
 use Illuminate\Http\Request;
-use App\Models\Article;
-use App\Models\Category;
+use Intervention\Image\Facades\Image;
+use Illuminate\Filesystem\Filesystem;
+
+use App\Helpers\ResponseFormatter;
+
 use App\Http\Resources\Articles\IndexCollection as ArticleIndex;
 use App\Http\Resources\Articles\Show as ArticleShow;
-use Intervention\Image\Facades\Image;
+
+use App\Models\Article;
+use App\Models\Category;
 
 class ArticleController extends Controller
 {
@@ -50,11 +55,13 @@ class ArticleController extends Controller
         $url = strtolower(preg_replace('/[^a-zA-Z0-9-]/', '-', $request->title)) . '-'. uniqid();
         if ($request->hasfile('image')) {
             $filename = $url . "." . $request->image->getClientOriginalExtension();
-            $request->image->move('assets/images/', $filename);
-            Image::make('assets/images/'.$filename)->resize(600, 400, function ($constraint)
+            $request->image->move('assets/images/articles/temp', $filename);
+            Image::make('assets/images/articles/temp/'.$filename)->resize(600, 400, function ($constraint)
                 {
                     $constraint->aspectRatio();
-            })->save('assets/images/thumbnails/'.$filename);
+            })->save('assets/images/articles/'.$filename);
+            $filesystem = new Filesystem;
+            $filesystem->cleanDirectory('assets/images/articles/temp');
         }
         $article = Article::create([
             'user_id' => $this->user->id,
@@ -90,11 +97,13 @@ class ArticleController extends Controller
         $filename = basename($article->image);
         if ($request->hasfile('image')) {
             $filename = $filename . "." . $request->image->getClientOriginalExtension();
-            $request->image->move('assets/images/', $filename);
-            Image::make('assets/images/'.$filename)->resize(600, 400, function ($constraint)
+            $request->image->move('assets/images/articles/temp/', $filename);
+            Image::make('assets/images/articles/temp/'.$filename)->resize(600, 400, function ($constraint)
                 {
                     $constraint->aspectRatio();
-            })->save('assets/images/thumbnails/'.$filename);
+            })->save('assets/images/articles/'.$filename);
+            $filesystem = new Filesystem;
+            $filesystem->cleanDirectory('assets/images/articles/temp');
         }
         $article->update([
             'title' => $request->title,

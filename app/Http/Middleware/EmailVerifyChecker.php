@@ -19,7 +19,7 @@ class EmailVerifyChecker
     {
         $user = User::where('id', auth('api')->user()->id)->first();
         if (is_null($user->email_verified_at)) {
-            return response()->json(['Unverified', 403, 403]);
+            return response()->json(['unverified'], 403);
         }
         return $next($request);
     }

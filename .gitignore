@@ -1,6 +1,7 @@
 /node_modules
 /public_html/hot
 /public_html/storage
+/public_html/assets/images/users
 /storage/*.key
 /vendor
 ssh
@@ -14,4 +15,3 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
-/app/Http/Controllers/API/TestController.php

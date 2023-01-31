@@ -37,12 +37,17 @@ use App\Http\Controllers\API\TestController;
         {
             /** User */
             Route::prefix('user')->group(function () {
-                Route::get('/', [UserController::class, 'index']);
                 Route::get('articles', [UserController::class, 'myArticles']);
                 Route::get('check', [UserController::class, 'check']);
+                /** User/Password */
                 Route::prefix('password')->group(function () {
                     Route::post('add', [UserController::class, 'setPassword']);
                     Route::post('change', [UserController::class, 'changePassword']);
+                });
+                /** User/Profile */
+                Route::prefix('profile')->group(function () {
+                    Route::get('/', [UserController::class, 'getProfile']);
+                    Route::post('/update', [UserController::class, 'updateProfile']);
                 });
             });
         });

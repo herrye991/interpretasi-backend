@@ -49,7 +49,8 @@ class AuthController extends Controller
             ],
         ];
         Mail::to($request->email)->send(new Verify($details));
-        return ResponseFormatter::success('Please confirm your email.', 403);
+        $accessToken = $user->createToken('authToken')->accessToken;        
+        return ResponseFormatter::success($accessToken, 200, 200);
     }
 
     public function signin(Request $request)

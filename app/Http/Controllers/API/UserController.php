@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use App\Models\Article;
 use App\Http\Resources\Articles\IndexCollection as ArticleIndex;
 use Illuminate\Support\Facades\Hash;
+use Intervention\Image\Facades\Image;
+use Illuminate\Filesystem\Filesystem;
+use URL;
 
 class UserController extends Controller
 {
@@ -16,9 +19,36 @@ class UserController extends Controller
         $this->user = auth('api')->user();
     }
     
-    public function index()
+    public function getProfile()
     {
-        return $this->user;
+        return ResponseFormatter::success($this->user, 200, 200);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = $this->user;
+        $request->validate([
+            'name' => 'required|min:2',
+            'photo.*' => 'image|mimetypes:image/jpeg,image/png,image/jpg'
+        ]);
+        if ($request->hasfile('photo')) {
+            $filename = $user->id . "." . $request->photo->getClientOriginalExtension();
+            $request->photo->move('assets/images/users/temp/', $filename);
+            Image::make('assets/images/users/temp/'.$filename)->resize(48, 48, function ($constraint)
+            {
+                $constraint->aspectRatio();
+            })->save('assets/images/users/'.$filename);
+            $filesystem = new Filesystem;
+            $filesystem->cleanDirectory('assets/images/users/temp');
+            $user->update([
+                'name' => $request->name,
+                'photo' => URL::asset('/assets/images/users/'.$filename)
+            ]);
+        }
+        $user->update([
+            'name' => $request->name
+        ]);
+        return ResponseFormatter::success('Profile Updated!', 200, 200);
     }
 
     public function myArticles(Article $article)
