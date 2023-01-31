@@ -50,7 +50,8 @@ class UserController extends Controller
         $user = $this->user;
         if ($user->set_password == '0') {
             $user->update([
-                'password' => Hash::make($request->password)
+                'password' => Hash::make($request->password),
+                'set_password' => '1'
             ]);
             return ResponseFormatter::success('Password Added!', 200, 200);
         }
