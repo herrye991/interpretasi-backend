@@ -18,6 +18,9 @@ class AuthController extends Controller
     public function __construct() {
         $this->now = Carbon::now();
         $this->token = bin2hex(base64_encode($this->now));
+        if (!empty(auth('api')->user())) {
+            $this->user = auth('api')->user();
+        }
     }
 
     public function signup(Request $request)
@@ -36,21 +39,16 @@ class AuthController extends Controller
                 'email' => $email,
             ]);
         }
-        VerifyData::create([
-            'user_id' => $user->id,
-            'token' => $this->token
-        ]);
-        $details = [
-            'title' => 'Interpretasi ID',
-            'body' => [
-                'Terima kasih telah mendaftar di Interpretasi ID! Kamu harus membuka tautan ini dalam 1 hari sejak pendaftaran untuk mengaktifkan akun.',
-                'https://interpretasi.id/account/accept/'.$this->now->format('Y-m-d').'/'.$this->token,
-                'Bersenang-senang, dan jangan ragu untuk menghubungi kami dengan umpan balik Anda.'
-            ],
-        ];
-        Mail::to($request->email)->send(new Verify($details));
+        $this->verify($request->email);
         $accessToken = $user->createToken('authToken')->accessToken;        
         return ResponseFormatter::success($accessToken, 200, 200);
+    }
+
+    public function resend()
+    {
+        $user = $this->user;
+        $this->verify($user->email);
+        return ResponseFormatter::success('Email Sended', 200, 200);
     }
 
     public function signin(Request $request)
@@ -124,5 +122,14 @@ class AuthController extends Controller
         } else {
             return ResponseFormatter::error('Invalid Provider!', 500, 500);
         }
+    }
+
+    public function verify($email)
+    {
+        VerifyData::create([
+            'user_id' => $this->user->id,
+            'token' => $this->token
+        ]);
+        Mail::to($email)->send(new Verify($this->token));
     }
 }

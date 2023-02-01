@@ -13,9 +13,10 @@ class UserController extends Controller
         $this->now = Carbon::now();
     }
 
-    public function accept($date, $token)
+    public function accept($token)
     {
-        $verify = Verify::whereDate('created_at', $date)->where('token', $token)->first();
+        $verify = Verify::where('created_at', '>=', $this->now->subDays(1)->toDateTimeString())
+        ->where('token', $token)->first();
         if (!is_null($verify)) {
             $user = User::where('id', $verify->user_id)->first();
             if (is_null($user->email_verified_at)) {
@@ -25,8 +26,8 @@ class UserController extends Controller
                 return 'Your account has been verified. You can close this window.';
             }
             $verify->delete();
-            return 'Token expired!';
+            return 'Your account already verified!';
         }
-        return 'URL not found!';
+        return 'Token expired!';
     }
 }

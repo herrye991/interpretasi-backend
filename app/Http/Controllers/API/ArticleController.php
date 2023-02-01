@@ -21,7 +21,9 @@ class ArticleController extends Controller
     function __construct()
     {
         $this->middleware('auth:api', ['only' => ['store', 'update', 'destroy']]);
-        $this->user = auth('api')->user();
+        if (!empty(auth('api')->user())) {
+            $this->user = auth('api')->user();
+        }
     }
     
     public function index(Article $article)

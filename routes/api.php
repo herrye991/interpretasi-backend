@@ -25,7 +25,10 @@ use App\Http\Controllers\API\TestController;
     /** Middleware Json Only */
     Route::group(['middleware' => 'json.only'], function (){
         /** Signup */
-        Route::post('signup', [AuthController::class, 'signup']);
+        Route::prefix('signup')->group(function () {
+            Route::post('/', [AuthController::class, 'signup']);
+            Route::post('/resend', [AuthController::class, 'resend']);
+        });
         /** Signin */
         Route::post('signin', [AuthController::class, 'signin']);
         /** Signout*/

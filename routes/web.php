@@ -20,5 +20,5 @@ Route::get('/', function () {
 
 Route::group(['prefix' => 'account'], function ()
 {
-    Route::get('accept/{date}/{token}', [UserController::class, 'accept']);
+    Route::get('accept/{token}', [UserController::class, 'accept']);
 });

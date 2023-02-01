@@ -18,9 +18,16 @@ class Verify extends Mailable
      *
      * @return void
      */
-    public function __construct($details)
+    public function __construct($token)
     {
-        $this->details = $details;
+        $this->details = [
+            'title' => 'Interpretasi ID',
+            'body' => [
+                'Terima kasih telah mendaftar di Interpretasi ID! Kamu harus membuka tautan ini dalam 1 hari sejak pendaftaran untuk mengaktifkan akun.',
+                'https://interpretasi.id/account/accept/'.$token,
+                'Bersenang-senang, dan jangan ragu untuk menghubungi kami dengan umpan balik Anda.'
+            ],
+        ];
     }
 
     /**
