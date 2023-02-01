@@ -17,9 +17,13 @@ class EmailVerifyChecker
      */
     public function handle(Request $request, Closure $next)
     {
-        $user = User::where('id', auth('api')->user()->id)->first();
-        if (is_null($user->email_verified_at)) {
-            return response()->json(['unverified'], 403);
+        $user = auth('api')->user();
+        $email_verified_at = '';
+        if (!is_null($user)) {
+            $email_verified_at = $user->email_verified_at;
+        }
+        if (is_null($email_verified_at)) {
+            return response()->json(['message' => 'Unverified'], 403);
         }
         return $next($request);
     }

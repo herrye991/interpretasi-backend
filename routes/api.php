@@ -27,16 +27,16 @@ use App\Http\Controllers\API\TestController;
         /** Signup */
         Route::prefix('signup')->group(function () {
             Route::post('/', [AuthController::class, 'signup']);
-            Route::post('/resend', [AuthController::class, 'resend']);
+            Route::post('/resend', [AuthController::class, 'resend'])->middleware('auth:api');
         });
         /** Signin */
         Route::post('signin', [AuthController::class, 'signin']);
         /** Signout*/
-        Route::post('signout', [AuthController::class, 'signout']);
+        Route::post('signout', [AuthController::class, 'signout'])->middleware('auth:api');
         /** Google Signin  */
         Route::post('signin/{provider}', [AuthController::class, 'oauth']);
         /** Midleware Auth */
-        Route::group(['middleware' => 'auth:api', 'middleware' => 'email-verify.checker'], function ()
+        Route::group(['middleware' => ['auth:api', 'email-verify.checker']], function ()
         {
             /** User */
             Route::prefix('user')->group(function () {

@@ -39,7 +39,7 @@ class AuthController extends Controller
                 'email' => $email,
             ]);
         }
-        $this->verify($request->email);
+        $this->verify($user->id, $request->email);
         $accessToken = $user->createToken('authToken')->accessToken;        
         return ResponseFormatter::success($accessToken, 200, 200);
     }
@@ -47,7 +47,7 @@ class AuthController extends Controller
     public function resend()
     {
         $user = $this->user;
-        $this->verify($user->email);
+        $this->verify($user->id, $user->email);
         return ResponseFormatter::success('Email Sended', 200, 200);
     }
 
@@ -124,10 +124,10 @@ class AuthController extends Controller
         }
     }
 
-    public function verify($email)
+    public function verify($id, $email)
     {
         VerifyData::create([
-            'user_id' => $this->user->id,
+            'user_id' => $id,
             'token' => $this->token
         ]);
         Mail::to($email)->send(new Verify($this->token));

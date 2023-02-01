@@ -16,7 +16,9 @@ class UserController extends Controller
 {
     function __construct()
     {
-        $this->user = auth('api')->user();
+        if (!empty(auth('api')->user())) {
+            $this->user = auth('api')->user();
+        }
     }
     
     public function getProfile()

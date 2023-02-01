@@ -90,6 +90,18 @@ class ArticleController extends Controller
     public function update(Request $request, $url)
     {
         $article = Article::where('url', $url)->where('user_id', $this->user->id)->firstOrFail();
+        
+        $status = request()->status;
+        if (!is_null($status)) {
+            if ($status == 'moderated') {
+                $article->update([
+                    'status' => 'moderated'
+                ]);
+                return ResponseFormatter::success('Status updated to moderated!', 200, 200);
+            }
+            return ResponseFormatter::error('Only can update status to moderated!', 400, 400);
+        }
+        
         $request->validate([
             'title' => 'required',
             'content' => 'required',
