@@ -18,7 +18,7 @@ class ImageUrl implements CastsAttributes
      */
     public function get($model, string $key, $value, array $attributes)
     {
-        return URL::asset('/assets/images/thumbnails/' . $value);
+        return URL::asset('/assets/images/articles/' . $value);
     }
 
     /**

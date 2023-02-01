@@ -5,6 +5,7 @@
 /storage/*.key
 /vendor
 ssh
+reset
 .env
 .env.backup
 .phpunit.result.cache
