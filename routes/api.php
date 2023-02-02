@@ -40,7 +40,10 @@ use App\Http\Controllers\API\TestController;
         {
             /** User */
             Route::prefix('user')->group(function () {
-                Route::get('articles', [UserController::class, 'myArticles']);
+                Route::prefix('articles')->group(function () {
+                    Route::get('/', [UserController::class, 'articles']);
+                    Route::get('/{type}', [UserController::class, 'articlesType']);
+                });
                 Route::get('check', [UserController::class, 'check']);
                 /** User/Password */
                 Route::prefix('password')->group(function () {

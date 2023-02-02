@@ -9,6 +9,7 @@ use Intervention\Image\Facades\Image;
 use Illuminate\Filesystem\Filesystem;
 use File;
 use URL;
+use Auth;
 
 use App\Helpers\ResponseFormatter;
 
@@ -17,6 +18,7 @@ use App\Http\Resources\Articles\Show as ArticleShow;
 
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\History;
 
 class ArticleController extends Controller
 {
@@ -86,6 +88,7 @@ class ArticleController extends Controller
         $article->update([
             'viewers' => $article->viewers + 1
         ]);
+        $this->history($article);
         return new ArticleShow($article);
     }
 
@@ -149,6 +152,20 @@ class ArticleController extends Controller
 
     public function history($article)
     {
-        
+        if (auth('api')->check()) {
+            $history = History::where('user_id', $this->user->id)->where('article_id', $article->id)->first();
+            if ($article->user_id !== $this->user->id) {
+                if (empty($history)) {
+                    History::create([
+                        'user_id' => $this->user->id,
+                        'article_id' => $article->id
+                    ]);
+                } else {
+                    $history->update([
+                        'updated_at' => Carbon::now()
+                    ]);
+                }
+            }
+        }
     }
 }

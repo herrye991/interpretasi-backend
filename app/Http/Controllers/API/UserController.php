@@ -59,26 +59,32 @@ class UserController extends Controller
         return ResponseFormatter::success('Profile Updated!', 200, 200);
     }
 
-    public function myArticles(Article $article)
+    public function articles(Article $article)
     {
         $status = request()->status;
         $articles = $article->with(['comments', 'likes'])->where('user_id', $this->user->id);
-        if ($status == 'drafted') {
-            $articles = $articles->where('status', 'drafted');
-        }
-        if ($status == 'moderated') {
-            $articles = $articles->where('status', 'moderated');
-        }
-        if ($status == 'published') {
-            $articles = $articles->where('status', 'published');
-        }
-        if ($status == 'rejected') {
-            $articles = $articles->where('status', 'rejected');
-        }
-        if ($status == 'banned') {
-            $articles = $articles->where('status', 'banned');
-        }
         return new ArticleIndex($articles->orderBy('created_at', 'desc')->paginate(5));
+    }
+
+    public function articlesType($type)
+    {
+        $articles = Article::with(['comments', 'likes']);
+        if ($type == 'history') {
+            $articles = $articles->join('histories', 'histories.article_id', 'articles.id')->where('histories.user_id', $this->user->id)->select('articles.*')->orderBy('articles.updated_at', 'desc');
+        } elseif ($type == 'drafted') {
+            $articles = $articles->where('user_id', $this->user->id)->where('status', 'drafted')->orderBy('created_at', 'desc');
+        } elseif ($type == 'moderated') {
+            $articles = $articles->where('user_id', $this->user->id)->where('status', 'moderated')->orderBy('created_at', 'desc');
+        } elseif ($type == 'published') {
+            $articles = $articles->where('user_id', $this->user->id)->where('status', 'published')->orderBy('created_at', 'desc');
+        } elseif ($type == 'rejected') {
+            $articles = $articles->where('user_id', $this->user->id)->where('status', 'rejected')->orderBy('created_at', 'desc');
+        } elseif ($type == 'banned') {
+            $articles = $articles->where('user_id', $this->user->id)->where('status', 'banned')->orderBy('created_at', 'desc');
+        } else {
+            abort(404);
+        }
+        return new ArticleIndex($articles->paginate(5));
     }
 
     public function setPassword(Request $request)
