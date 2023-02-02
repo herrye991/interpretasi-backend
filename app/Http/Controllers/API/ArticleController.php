@@ -143,4 +143,9 @@ class ArticleController extends Controller
         $categories = Category::all();
         return ResponseFormatter::success($categories);
     }
+
+    public function history($article)
+    {
+        
+    }
 }

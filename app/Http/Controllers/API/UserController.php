@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Article;
-use App\Http\Resources\Articles\IndexCollection as ArticleIndex;
+
 use Illuminate\Support\Facades\Hash;
 use Intervention\Image\Facades\Image;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Http\Request;
 use URL;
+use File;
+
+use App\Http\Resources\Articles\IndexCollection as ArticleIndex;
+use App\Helpers\ResponseFormatter;
+use App\Models\Article;
 
 class UserController extends Controller
 {
@@ -34,14 +37,17 @@ class UserController extends Controller
             'photo.*' => 'image|mimetypes:image/jpeg,image/png,image/jpg'
         ]);
         if ($request->hasfile('photo')) {
-            $filename = $user->id . "." . $request->photo->getClientOriginalExtension();
+            $filename = uniqid() . "." . $request->photo->getClientOriginalExtension();
             $request->photo->move('assets/images/users/temp/', $filename);
-            Image::make('assets/images/users/temp/'.$filename)->resize(48, 48, function ($constraint)
+            Image::make('assets/images/users/temp/'.$filename)->resize(256, 256, function ($constraint)
             {
                 $constraint->aspectRatio();
             })->save('assets/images/users/'.$filename);
             $filesystem = new Filesystem;
             $filesystem->cleanDirectory('assets/images/users/temp');
+            if (strpos($user->photo, URL::to('/')) !== false) {
+                File::delete('assets/images/users/' . basename($user->photo));
+            }
             $user->update([
                 'name' => $request->name,
                 'photo' => URL::asset('/assets/images/users/'.$filename)
