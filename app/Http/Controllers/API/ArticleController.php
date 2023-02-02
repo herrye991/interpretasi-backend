@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 use Illuminate\Filesystem\Filesystem;
+use File;
+use URL;
 
 use App\Helpers\ResponseFormatter;
 
@@ -70,7 +72,7 @@ class ArticleController extends Controller
             'url' => $url,
             'title' => $request->title,
             'content' => $request->content,
-            'image' => $filename,
+            'image' => URL::asset('/assets/images/articles/'.$filename),
             'categories' => $request->categories,
             'status' => 'drafted'
         ]);
@@ -110,7 +112,7 @@ class ArticleController extends Controller
         ]);
         $filename = basename($article->image);
         if ($request->hasfile('image')) {
-            $filename = $filename . "." . $request->image->getClientOriginalExtension();
+            $filename = strtolower(preg_replace('/[^a-zA-Z0-9-]/', '-', $request->title)) . '-'. uniqid() . "." . $request->image->getClientOriginalExtension();
             $request->image->move('assets/images/articles/temp/', $filename);
             Image::make('assets/images/articles/temp/'.$filename)->resize(600, 400, function ($constraint)
                 {
@@ -118,11 +120,12 @@ class ArticleController extends Controller
             })->save('assets/images/articles/'.$filename);
             $filesystem = new Filesystem;
             $filesystem->cleanDirectory('assets/images/articles/temp');
+            File::delete('assets/images/articles/'.basename($article->image));
         }
         $article->update([
             'title' => $request->title,
             'content' => $request->content,
-            'image' => $filename,
+            'image' => URL::asset('/assets/images/articles/'.$filename),
             'categories' => $request->categories,
             'status' => 'drafted'
         ]);

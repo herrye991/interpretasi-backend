@@ -21,7 +21,6 @@ class Article extends Model
 
     protected $casts = [
         'url' => ArticleUrl::class,
-        'image' => ImageUrl::class,
         'categories' => Categories::class,
         'created_at' => DateToString::class
     ];
