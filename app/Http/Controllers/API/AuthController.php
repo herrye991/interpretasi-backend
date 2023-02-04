@@ -7,9 +7,11 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Helpers\ResponseFormatter;
 use App\Models\Verify as VerifyData;
+use App\Models\PasswordReset as PasswordResetData;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\PasswordReset;
 use App\Mail\Verify;
 use Auth;
 
@@ -131,5 +133,20 @@ class AuthController extends Controller
             'token' => $this->token
         ]);
         Mail::to($email)->send(new Verify($this->token));
+    }
+
+    public function reset(Request $request)
+    {
+        $email = $request->email;
+        $user = User::where('email', $email)->first();
+        if (!empty($user)) {
+            PasswordResetData::create([
+                'email' => $email,
+                'token' => $this->token
+            ]);
+            Mail::to($email)->send(new PasswordReset($this->token));
+            return ResponseFormatter::success('Email sended!', 200, 200);
+        }
+        return ResponseFormatter::error('User not found!', 404, 404);
     }
 }

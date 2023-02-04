@@ -33,6 +33,8 @@ use App\Http\Controllers\API\TestController;
         Route::post('signin', [AuthController::class, 'signin']);
         /** Signout*/
         Route::post('signout', [AuthController::class, 'signout'])->middleware('auth:api');
+        /** Password Reset */
+        Route::post('password-reset', [AuthController::class, 'reset']);
         /** Google Signin  */
         Route::post('signin/{provider}', [AuthController::class, 'oauth']);
         /** Midleware Auth */

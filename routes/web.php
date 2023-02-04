@@ -21,4 +21,6 @@ Route::get('/', function () {
 Route::group(['prefix' => 'account'], function ()
 {
     Route::get('accept/{token}', [UserController::class, 'accept']);
+    Route::get('reset/{token}', [UserController::class, 'reset'])->name('reset');
+    Route::post('reset/{token}', [UserController::class, 'resetPost']);
 });
