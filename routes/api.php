@@ -1,12 +1,12 @@
 <?php
 
-use App\Http\Controllers\API\ArticleController;
+use App\Http\Controllers\v1\ArticleController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\API\CommentController;
-use App\Http\Controllers\API\UserController;
-use App\Http\Controllers\API\LikeController;
-use App\Http\Controllers\API\TestController;
+use App\Http\Controllers\v1\AuthController;
+use App\Http\Controllers\v1\CommentController;
+use App\Http\Controllers\v1\UserController;
+use App\Http\Controllers\v1\LikeController;
+use App\Http\Controllers\v1\TestController;
 /*
 |--------------------------------------------------------------------------
 | API Routes

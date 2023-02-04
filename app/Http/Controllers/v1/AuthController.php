@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -49,8 +49,11 @@ class AuthController extends Controller
     public function resend()
     {
         $user = $this->user;
-        $this->verify($user->id, $user->email);
-        return ResponseFormatter::success('Email Sended', 200, 200);
+        if (!is_null($user->email_verified_at)) {
+            $this->verify($user->id, $user->email);
+            return ResponseFormatter::success('Email Sended', 200, 200);
+        }
+        return ResponseFormatter::error('Current user already verified!', 400, 400);
     }
 
     public function signin(Request $request)

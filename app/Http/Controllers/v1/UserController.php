@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 
@@ -13,6 +13,8 @@ use File;
 
 use App\Http\Resources\Articles\IndexCollection as ArticleIndex;
 use App\Helpers\ResponseFormatter;
+use App\Helpers\Domain;
+use App\Helpers\Path;
 use App\Models\Article;
 
 class UserController extends Controller
@@ -38,19 +40,19 @@ class UserController extends Controller
         ]);
         if ($request->hasfile('photo')) {
             $filename = uniqid() . "." . $request->photo->getClientOriginalExtension();
-            $request->photo->move('assets/images/users/temp/', $filename);
-            Image::make('assets/images/users/temp/'.$filename)->resize(256, 256, function ($constraint)
+            $request->photo->move(Path::public('assets/images/users/temp/'), $filename);
+            Image::make(Path::public('assets/images/users/temp/'.$filename))->resize(256, 256, function ($constraint)
             {
                 $constraint->aspectRatio();
-            })->save('assets/images/users/'.$filename);
+            })->save(Path::public('assets/images/users/'.$filename));
             $filesystem = new Filesystem;
-            $filesystem->cleanDirectory('assets/images/users/temp');
+            $filesystem->cleanDirectory(Path::public('assets/images/users/temp'));
             if (strpos($user->photo, URL::to('/')) !== false) {
-                File::delete('assets/images/users/' . basename($user->photo));
+                File::delete(Path::public('assets/images/users/' . basename($user->photo)));
             }
             $user->update([
                 'name' => $request->name,
-                'photo' => URL::asset('/assets/images/users/'.$filename)
+                'photo' => Domain::base('assets/images/users/'.$filename)
             ]);
         }
         $user->update([

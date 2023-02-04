@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 
@@ -12,6 +12,8 @@ use URL;
 use Auth;
 
 use App\Helpers\ResponseFormatter;
+use App\Helpers\Domain;
+use App\Helpers\Path;
 
 use App\Http\Resources\Articles\IndexCollection as ArticleIndex;
 use App\Http\Resources\Articles\Show as ArticleShow;
@@ -61,20 +63,20 @@ class ArticleController extends Controller
         $url = strtolower(preg_replace('/[^a-zA-Z0-9-]/', '-', $request->title)) . '-'. uniqid();
         if ($request->hasfile('image')) {
             $filename = $url . "." . $request->image->getClientOriginalExtension();
-            $request->image->move('assets/images/articles/temp', $filename);
-            Image::make('assets/images/articles/temp/'.$filename)->resize(600, 400, function ($constraint)
+            $request->image->move(Path::public('assets/images/articles/temp'), $filename);
+            Image::make(Path::public('assets/images/articles/temp/'.$filename))->resize(600, 400, function ($constraint)
                 {
                     $constraint->aspectRatio();
-            })->save('assets/images/articles/'.$filename);
+            })->save(Path::public('assets/images/articles/'.$filename));
             $filesystem = new Filesystem;
-            $filesystem->cleanDirectory('assets/images/articles/temp');
+            $filesystem->cleanDirectory(Path::public('assets/images/articles/temp'));
         }
         $article = Article::create([
             'user_id' => $this->user->id,
             'url' => $url,
             'title' => $request->title,
             'content' => $request->content,
-            'image' => URL::asset('/assets/images/articles/'.$filename),
+            'image' => Domain::base('assets/images/articles/'. $filename),
             'categories' => $request->categories,
             'status' => 'drafted'
         ]);
@@ -116,19 +118,19 @@ class ArticleController extends Controller
         $filename = basename($article->image);
         if ($request->hasfile('image')) {
             $filename = strtolower(preg_replace('/[^a-zA-Z0-9-]/', '-', $request->title)) . '-'. uniqid() . "." . $request->image->getClientOriginalExtension();
-            $request->image->move('assets/images/articles/temp/', $filename);
-            Image::make('assets/images/articles/temp/'.$filename)->resize(600, 400, function ($constraint)
+            $request->image->move(Path::public('assets/images/articles/temp/'), $filename);
+            Image::make(Path::public('assets/images/articles/temp/'.$filename))->resize(600, 400, function ($constraint)
                 {
                     $constraint->aspectRatio();
-            })->save('assets/images/articles/'.$filename);
+            })->save(Path::public('assets/images/articles/'.$filename));
             $filesystem = new Filesystem;
-            $filesystem->cleanDirectory('assets/images/articles/temp');
-            File::delete('assets/images/articles/'.basename($article->image));
+            $filesystem->cleanDirectory(Path::public('assets/images/articles/temp'));
+            File::delete(Path::public('assets/images/articles/'.basename($article->image)));
         }
         $article->update([
             'title' => $request->title,
             'content' => $request->content,
-            'image' => URL::asset('/assets/images/articles/'.$filename),
+            'image' => Domain::base('assets/images/articles/'. $filename),
             'categories' => $request->categories,
             'status' => 'drafted'
         ]);

@@ -18,7 +18,7 @@ class ArticleUrl implements CastsAttributes
      */
     public function get($model, string $key, $value, array $attributes)
     {
-        return URL::asset('api/article/'. $value);
+        return URL::asset('v1/article/'. $value);
     }
 
     /**
