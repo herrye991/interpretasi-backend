@@ -16,14 +16,23 @@ use App\Helpers\ResponseFormatter;
 use App\Helpers\Domain;
 use App\Helpers\Path;
 use App\Models\Article;
+Use App\Models\User;
 
 class UserController extends Controller
 {
     function __construct()
     {
-        if (!empty(auth('api')->user())) {
+        if (auth('api')->check()) {
             $this->user = auth('api')->user();
         }
+    }
+
+    public function show ($id)
+    {
+        $user = User::with(['articles' => function($query){
+            $query->select('id', 'user_id', 'url', 'title', 'image');
+        }])->firstOrFail();
+        return ResponseFormatter::success($user, 200, 200);
     }
     
     public function getProfile()

@@ -38,6 +38,11 @@ use App\Http\Controllers\v1\TestController;
         Route::post('password-reset', [AuthController::class, 'reset']);
         /** Google Signin  */
         Route::post('signin/{provider}', [AuthController::class, 'oauth']);
+        
+        Route::group(['prefix' => 'user'], function() {
+            Route::get('/{id}', [UserController::class, 'show']);
+        });
+        
         /** Midleware Auth */
         Route::group(['middleware' => ['auth:api', 'email-verify.checker']], function ()
         {
