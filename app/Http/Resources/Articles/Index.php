@@ -15,6 +15,7 @@ class Index extends JsonResource
     public function toArray($request)
     {
         return [
+            'category_id' => $this->category_id,
             'title' => $this->title,
             'url' => $this->url,
             'image' => $this->image,

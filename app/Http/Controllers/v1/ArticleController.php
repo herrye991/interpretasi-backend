@@ -8,8 +8,7 @@ use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 use Illuminate\Filesystem\Filesystem;
 use File;
-use URL;
-use Auth;
+use Carbon\Carbon;
 
 use App\Helpers\ResponseFormatter;
 use App\Helpers\Domain;
@@ -46,7 +45,7 @@ class ArticleController extends Controller
             $articles = $articles->where('title', 'LIKE', "%{$find}%");
         }
         if (!is_null($category)) {
-            $articles = $articles->where('categories', 'LIKE', "%{$category}%");
+            $articles = $articles->where('category_id', $category);
         }
         return new ArticleIndex($articles->orderBy('created_at', 'desc')->paginate(5));
     }
@@ -54,12 +53,13 @@ class ArticleController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'category_id' => 'required',
             'title' => 'required',
             'content' => 'required',
             'original_content' => 'required',
             'image' => 'required',
             'image.*' => 'image|mimetypes:image/jpeg,image/png,image/jpg',
-            'categories' => 'required'
+            'tags' => 'required'
         ]);
         $url = strtolower(preg_replace('/[^a-zA-Z0-9-]/', '-', $request->title)) . '-'. uniqid();
         if ($request->hasfile('image')) {
@@ -74,13 +74,14 @@ class ArticleController extends Controller
         }
         $article = Article::create([
             'user_id' => $this->user->id,
+            'category_id' => $request->category_id,
             'url' => $url,
             'title' => $request->title,
             'content' => $request->content,
             'original_content' => $request->original_content,
             'image' => Domain::base('assets/images/articles/'. $filename),
-            'categories' => $request->categories,
-            'status' => 'drafted'
+            'status' => 'published',
+            'tags' => $request->tags
         ]);
 
         return ResponseFormatter::success($article, 200, 200);
@@ -112,11 +113,12 @@ class ArticleController extends Controller
         }
         
         $request->validate([
+            'category_id' => 'required',
             'title' => 'required',
             'content' => 'required',
             'original_content' => 'required',
             'image.*' => 'image|mimetypes:image/jpeg,image/png,image/jpg',
-            'categories' => 'required'
+            'tags' => 'required'
         ]);
         $filename = basename($article->image);
         if ($request->hasfile('image')) {
@@ -131,12 +133,13 @@ class ArticleController extends Controller
             File::delete(Path::public('assets/images/articles/'.basename($article->image)));
         }
         $article->update([
+            'category_id' => $request->category_id,
             'title' => $request->title,
             'content' => $request->content,
             'original' => $request->original,
             'image' => Domain::base('assets/images/articles/'. $filename),
-            'categories' => $request->categories,
-            'status' => 'drafted'
+            'status' => 'published',
+            'tags' => $request->tags
         ]);
 
         return ResponseFormatter::success($article, 200, 200);

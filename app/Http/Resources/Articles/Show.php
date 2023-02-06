@@ -15,12 +15,17 @@ class Show extends JsonResource
     public function toArray($request)
     {
         $response = [
+            'user' => [
+                'name' => $this->user->name,
+                'photo' => $this->user->photo
+            ],
+            'category_id' => $this->category_id,
             'title' => $this->title,
             'url' => $this->url,
             'image' => $this->image,
             'content' => $this->content,
             'original_content' => $this->original_content,
-            'categories' => $this->categories,
+            'tags' => $this->tags,
             'viewers' => $this->viewers,
             'comments' => count($this->comments),
             'likes' => count($this->likes),
