@@ -6,6 +6,7 @@ use App\Http\Controllers\v1\AuthController;
 use App\Http\Controllers\v1\CommentController;
 use App\Http\Controllers\v1\UserController;
 use App\Http\Controllers\v1\LikeController;
+use App\Http\Controllers\v1\ReportController;
 use App\Http\Controllers\v1\TestController;
 /*
 |--------------------------------------------------------------------------
@@ -42,6 +43,7 @@ use App\Http\Controllers\v1\TestController;
         {
             /** User */
             Route::prefix('user')->group(function () {
+                Route::post('/{id}/report', [ReportController::class, 'user']);
                 Route::prefix('articles')->group(function () {
                     Route::get('/', [UserController::class, 'articles']);
                     Route::get('/{type}', [UserController::class, 'articlesType']);
@@ -62,6 +64,8 @@ use App\Http\Controllers\v1\TestController;
         /** Article */
         Route::apiResource('article', ArticleController::class);
         Route::prefix('article')->group(function () {
+            /** Report */
+            Route::post('{url}/report', [ReportController::class, 'article']);
             /** Artticle/Comment */
             Route::get('{url}/comment', [CommentController::class, 'index']);
             Route::post('{url}/comment', [CommentController::class, 'store']);
