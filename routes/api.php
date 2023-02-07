@@ -69,6 +69,8 @@ use App\Http\Controllers\v1\TestController;
         /** Article */
         Route::apiResource('article', ArticleController::class);
         Route::prefix('article')->group(function () {
+            /** By Tag */
+            Route::get('tag/{tag}', [ArticleController::class, 'tag']);
             /** Report */
             Route::post('{url}/report', [ReportController::class, 'article']);
             /** Artticle/Comment */

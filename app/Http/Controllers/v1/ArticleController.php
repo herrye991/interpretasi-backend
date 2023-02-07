@@ -177,4 +177,9 @@ class ArticleController extends Controller
             }
         }
     }
+
+    public function tag ($tag) {
+        $articles = Article::whereJsonContains('tags', $tag)->paginate(5);
+        return new ArticleIndex($articles);
+    }
 }
