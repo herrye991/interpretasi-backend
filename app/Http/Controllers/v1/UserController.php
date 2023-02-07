@@ -31,7 +31,7 @@ class UserController extends Controller
     {
         $user = User::with(['articles' => function($query){
             $query->select('id', 'user_id', 'url', 'title', 'image');
-        }])->firstOrFail();
+        }])->where('id', $id)->firstOrFail();
         return ResponseFormatter::success($user, 200, 200);
     }
     

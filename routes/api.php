@@ -40,7 +40,7 @@ use App\Http\Controllers\v1\TestController;
         Route::post('signin/{provider}', [AuthController::class, 'oauth']);
         
         Route::group(['prefix' => 'user'], function() {
-            Route::get('/{id}', [UserController::class, 'show']);
+            Route::get('/{id}/show', [UserController::class, 'show']);
         });
         
         /** Midleware Auth */
