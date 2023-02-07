@@ -40,7 +40,7 @@ class ArticleController extends Controller
             return $this->categories();
         }
         
-        $articles = $article->where('status', 'published')->with(['comments', 'likes']);
+        $articles = $article->with(['comments', 'likes']);
         if (!is_null($find)) {
             $articles = $articles->where('title', 'LIKE', "%{$find}%");
         }
@@ -80,7 +80,7 @@ class ArticleController extends Controller
             'content' => $request->content,
             'original_content' => $request->original_content,
             'image' => Domain::base('assets/images/articles/'. $filename),
-            'status' => 'published',
+            'status' => 'drafted',
             'tags' => $request->tags
         ]);
 
@@ -138,7 +138,7 @@ class ArticleController extends Controller
             'content' => $request->content,
             'original' => $request->original,
             'image' => Domain::base('assets/images/articles/'. $filename),
-            'status' => 'published',
+            'status' => 'drafted',
             'tags' => $request->tags
         ]);
 
