@@ -25,7 +25,7 @@ class ArticleController extends Controller
 {
     function __construct()
     {
-        $this->middleware('auth:api', ['only' => ['store', 'update', 'destroy']]);
+        $this->middleware('auth:api', ['only' => ['store', 'update', 'destroy', 'uploadImage', 'history']]);
         if (!empty(auth('api')->user())) {
             $this->user = auth('api')->user();
         }
@@ -161,19 +161,17 @@ class ArticleController extends Controller
 
     public function history($article)
     {
-        if (auth('api')->check()) {
-            $history = History::where('user_id', $this->user->id)->where('article_id', $article->id)->first();
-            if ($article->user_id !== $this->user->id) {
-                if (empty($history)) {
-                    History::create([
-                        'user_id' => $this->user->id,
-                        'article_id' => $article->id
-                    ]);
-                } else {
-                    $history->update([
-                        'updated_at' => Carbon::now()
-                    ]);
-                }
+        $history = History::where('user_id', $this->user->id)->where('article_id', $article->id)->first();
+        if ($article->user_id !== $this->user->id) {
+            if (empty($history)) {
+                History::create([
+                    'user_id' => $this->user->id,
+                    'article_id' => $article->id
+                ]);
+            } else {
+                $history->update([
+                    'updated_at' => Carbon::now()
+                ]);
             }
         }
     }
@@ -181,5 +179,25 @@ class ArticleController extends Controller
     public function tag ($tag) {
         $articles = Article::whereJsonContains('tags', $tag)->paginate(5);
         return new ArticleIndex($articles);
+    }
+
+    public function uploadImage (Request $request)
+    {
+        $request->validate([
+            'image' => 'required',
+            'image.*' => 'image|mimetypes:image/jpeg,image/png,image/jpg',
+        ]);
+        if ($request->hasfile('image')) {
+            $filename = uniqid() . "." . $request->image->getClientOriginalExtension();
+            $request->image->move(Path::public('assets/images/articles/contents/temp'), $filename);
+            Image::make(Path::public('assets/images/articles/contents/temp/'.$filename))->resize(600, 400, function ($constraint)
+                {
+                    $constraint->aspectRatio();
+            })->save(Path::public('assets/images/articles/contents/'.$filename));
+            $filesystem = new Filesystem;
+            $filesystem->cleanDirectory(Path::public('assets/images/articles/contents/temp'));
+        }
+
+        return response()->json(['url' => Domain::base('assets/images/articles/contents/'. $filename)]);
     }
 }

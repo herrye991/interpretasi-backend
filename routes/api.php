@@ -71,6 +71,8 @@ use App\Http\Controllers\v1\TestController;
         Route::prefix('article')->group(function () {
             /** By Tag */
             Route::get('tag/{tag}', [ArticleController::class, 'tag']);
+            /** Upload Image */
+            Route::post('upload-image', [ArticleController::class, 'uploadImage']);
             /** Report */
             Route::post('{url}/report', [ReportController::class, 'article']);
             /** Artticle/Comment */
