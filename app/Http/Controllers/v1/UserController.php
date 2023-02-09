@@ -30,7 +30,7 @@ class UserController extends Controller
     public function show ($id)
     {
         $user = User::with(['articles' => function($query){
-            $query->select('id', 'user_id', 'url', 'title', 'image');
+            $query->select('id', 'user_id', 'url', 'title', 'image', 'viewers')->withCount(['comments', 'likes']);
         }])->where('id', $id)->firstOrFail();
         return ResponseFormatter::success($user, 200, 200);
     }

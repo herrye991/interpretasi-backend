@@ -20,8 +20,8 @@ class Index extends JsonResource
             'url' => $this->url,
             'image' => $this->image,
             'viewers' => $this->viewers,
-            'comments' => count($this->comments),
-            'likes' => count($this->likes),
+            'comments_count' => count($this->comments),
+            'likes_count' => count($this->likes),
             'created_at' => $this->created_at,
         ];
     }
