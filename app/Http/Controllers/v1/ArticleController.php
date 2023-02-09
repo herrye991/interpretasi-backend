@@ -31,23 +31,31 @@ class ArticleController extends Controller
         }
     }
     
-    public function index(Article $article)
+    public function index()
     {
+        $articles = Article::orderBy('created_at', 'desc');
         $type = request()->type;
         $find = request()->find;
         $category = request()->category;
+        $trending = request()->trending;
         if ($type == 'categories') {
             return $this->categories();
         }
-        
-        $articles = $article->with(['comments', 'likes']);
+        $articles = $articles->with(['comments', 'likes']);
         if (!is_null($find)) {
             $articles = $articles->where('title', 'LIKE', "%{$find}%");
         }
         if (!is_null($category)) {
             $articles = $articles->where('category_id', $category);
         }
-        return new ArticleIndex($articles->orderBy('created_at', 'desc')->paginate(5));
+        if (!is_null($trending)) {
+            if ($trending == true) {
+                $articles = $articles->where('trending', '1');
+            } elseif ($trending == false) {
+                $articles = $articles->where('trending', '0');
+            }
+        }
+        return new ArticleIndex($articles->paginate(5));
     }
 
     public function store(Request $request)
