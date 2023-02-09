@@ -79,6 +79,7 @@ use App\Http\Controllers\v1\TestController;
             Route::get('{url}/comment', [CommentController::class, 'index']);
             Route::post('{url}/comment', [CommentController::class, 'store']);
             Route::delete('{url}/comment/{id}', [CommentController::class, 'destroy']);
+            Route::post('{url}/comment/{id}/report', [ReportController::class, 'comment']);
             /** Article/Like */
             Route::get('{url}/like', [LikeController::class, 'index']);
             Route::post('{url}/like', [LikeController::class, 'store']);
