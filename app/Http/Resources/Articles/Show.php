@@ -16,6 +16,7 @@ class Show extends JsonResource
     {
         $response = [
             'user' => [
+                'id' => $this->user->id,
                 'name' => $this->user->name,
                 'photo' => $this->user->photo
             ],
