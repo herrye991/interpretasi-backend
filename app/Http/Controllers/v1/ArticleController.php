@@ -38,6 +38,7 @@ class ArticleController extends Controller
         $find = request()->find;
         $category = request()->category;
         $trending = request()->trending;
+        $limit = request()->limit;
         if ($type == 'categories') {
             return $this->categories();
         }
@@ -50,12 +51,17 @@ class ArticleController extends Controller
         }
         if (!is_null($trending)) {
             if ($trending == true) {
-                $articles = $articles->where('trending', '1');
+                $articles = $articles->where('trending', '1')->orderBy('viewers', 'desc');
             } elseif ($trending == false) {
-                $articles = $articles->where('trending', '0');
+                $articles = $articles->where('trending', '0')->orderBy('viewers', 'desc');
             }
         }
-        return new ArticleIndex($articles->paginate(5));
+        if (!is_null($limit)) {
+            $articles = $articles->limit($limit)->get();
+        } else {
+            $articles = $articles->paginate(5);
+        }
+        return new ArticleIndex($articles);
     }
 
     public function store(Request $request)
