@@ -33,7 +33,7 @@ class ArticleController extends Controller
     
     public function index()
     {
-        $articles = Article::orderBy('created_at', 'desc');
+        $articles = Article::where('status', 'published');
         $type = request()->type;
         $find = request()->find;
         $category = request()->category;
