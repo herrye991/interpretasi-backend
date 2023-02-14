@@ -21,7 +21,6 @@ class Article extends Model
     ];
 
     protected $casts = [
-        'url' => ArticleUrl::class,
         'tags' => JsonDecode::class,
         'created_at' => DateToString::class
     ];

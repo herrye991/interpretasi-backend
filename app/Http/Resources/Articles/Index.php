@@ -23,6 +23,7 @@ class Index extends JsonResource
             'comments_count' => count($this->comments),
             'likes_count' => count($this->likes),
             'created_at' => $this->created_at,
+            'user' => $this->user
         ];
     }
 }

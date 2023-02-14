@@ -38,11 +38,12 @@ class ArticleController extends Controller
         $find = request()->find;
         $category = request()->category;
         $trending = request()->trending;
-        $limit = request()->limit;
+        $take = request()->take;
+        $skip = request()->skip;
         if ($type == 'categories') {
             return $this->categories();
         }
-        $articles = $articles->with(['comments', 'likes']);
+        $articles = $articles->with(['comments', 'likes', 'user']);
         if (!is_null($find)) {
             $articles = $articles->where('title', 'LIKE', "%{$find}%");
         }
@@ -56,8 +57,8 @@ class ArticleController extends Controller
                 $articles = $articles->where('trending', '0')->orderBy('viewers', 'desc');
             }
         }
-        if (!is_null($limit)) {
-            $articles = $articles->limit($limit)->get();
+        if (!is_null($take) && !is_null($skip)) {
+            $articles = $articles->skip($skip)->take($take)->get();
         } else {
             $articles = $articles->paginate(5);
         }
