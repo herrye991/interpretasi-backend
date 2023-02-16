@@ -26,20 +26,21 @@ class ArticleController extends Controller
     function __construct()
     {
         $this->middleware('auth:api', ['only' => ['store', 'update', 'destroy', 'uploadImage', 'history']]);
-        if (!empty(auth('api')->user())) {
+        if (auth('api')->check()) {
             $this->user = auth('api')->user();
         }
     }
     
     public function index()
     {
-        $articles = Article::where('status', 'published');
+        $articles = Article::query(); //where('status', 'published');
         $type = request()->type;
         $find = request()->find;
         $category = request()->category;
         $trending = request()->trending;
         $take = request()->take;
         $skip = request()->skip;
+        $orderBy = request()->orderBy;
         if ($type == 'categories') {
             return $this->categories();
         }
@@ -55,6 +56,14 @@ class ArticleController extends Controller
                 $articles = $articles->where('trending', '1')->orderBy('viewers', 'desc');
             } elseif ($trending == false) {
                 $articles = $articles->where('trending', '0')->orderBy('viewers', 'desc');
+            }
+        }
+        if (!is_null($orderBy)) {
+            if ($orderBy == 'lastest') {
+                $articles = $articles->orderBy('created_at', 'desc');
+            }
+            if ($orderBy == 'mostView') {
+                $articles = $articles->orderBy('viewers', 'desc');
             }
         }
         if (!is_null($take) && !is_null($skip)) {
@@ -108,7 +117,9 @@ class ArticleController extends Controller
         $article->update([
             'viewers' => $article->viewers + 1
         ]);
-        $this->history($article);
+        if (auth('api')->check()) {
+            $this->history($article);
+        }
         return new ArticleShow($article);
     }
 
