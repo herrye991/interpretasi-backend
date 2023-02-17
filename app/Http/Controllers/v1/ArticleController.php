@@ -162,7 +162,7 @@ class ArticleController extends Controller
             'category_id' => $request->category_id,
             'title' => $request->title,
             'content' => $request->content,
-            'original' => $request->original_content,
+            'original_content' => $request->original_content,
             'image' => Domain::base('assets/images/articles/'. $filename),
             'status' => 'drafted',
             'tags' => $request->tags
