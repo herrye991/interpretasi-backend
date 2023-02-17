@@ -18,7 +18,8 @@ class Show extends JsonResource
             'user' => [
                 'id' => $this->user->id,
                 'name' => $this->user->name,
-                'photo' => $this->user->photo
+                'photo' => $this->user->photo,
+                'bio' => $this->user->bio,
             ],
             'category_id' => $this->category_id,
             'title' => $this->title,

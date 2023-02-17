@@ -61,11 +61,13 @@ class UserController extends Controller
             }
             $user->update([
                 'name' => $request->name,
-                'photo' => Domain::base('assets/images/users/'.$filename)
+                'photo' => Domain::base('assets/images/users/'.$filename),
+                'bio' => $request->bio === null ? '' : $request->bio
             ]);
         }
         $user->update([
-            'name' => $request->name
+            'name' => $request->name,
+            'bio' => $request->bio === null ? '' : $request->bio
         ]);
         return ResponseFormatter::success('Profile Updated!', 200, 200);
     }
