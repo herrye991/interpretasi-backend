@@ -29,8 +29,8 @@ class Show extends JsonResource
             'original_content' => $this->original_content,
             'tags' => $this->tags,
             'viewers' => $this->viewers,
-            'comments' => count($this->comments),
-            'likes' => count($this->likes),
+            'comments_count' => count($this->comments),
+            'likes_count' => count($this->likes),
             'created_at' => $this->created_at,
         ];
         return $response;
