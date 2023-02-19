@@ -34,13 +34,7 @@ class ArticleController extends Controller
     public function index()
     {
         $articles = Article::query(); //where('status', 'published');
-        $type = request()->type;
-        $find = request()->find;
-        $category = request()->category;
-        $trending = request()->trending;
-        $take = request()->take;
-        $skip = request()->skip;
-        $orderBy = request()->orderBy;
+        $type = request()->type; $find = request()->find; $category = request()->category; $trending = request()->trending; $take = request()->take; $skip = request()->skip; $orderBy = request()->orderBy; $random = request()->random;
         if ($type == 'categories') {
             return $this->categories();
         }
@@ -70,6 +64,9 @@ class ArticleController extends Controller
             $articles = $articles->skip($skip)->take($take)->get();
         } else {
             $articles = $articles->paginate(5);
+        }
+        if (!is_null($random)) {
+            $articles = $articles->random($random);
         }
         return new ArticleIndex($articles);
     }
