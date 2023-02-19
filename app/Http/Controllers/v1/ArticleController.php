@@ -114,9 +114,6 @@ class ArticleController extends Controller
     public function show($url)
     {
         $article = Article::where('url', $url)->firstOrFail();
-        $article->update([
-            'viewers' => $article->viewers + 1
-        ]);
         if (auth('api')->check()) {
             $this->history($article);
         }
@@ -225,5 +222,14 @@ class ArticleController extends Controller
         }
 
         return response()->json(['url' => Domain::base('assets/images/articles/contents/'. $filename)]);
+    }
+
+    public function preview($url)
+    {
+        $article = Article::where('url', $url)->firstOrFail();
+        $article->update([
+            'viewers' => $article->viewers + 1
+        ]);
+        return ResponseFormatter::success('Success', 200, 200);
     }
 }
