@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('password')->default('');
             $table->enum('set_password', ['0', '1'])->default('0');
             $table->text('photo')->default('https://interpretasi.id/assets/images/users/default.jpg');
+            $table->text('bio')->default('');
             $table->enum('type', ['0', '1', '2', '3'])->default('0');
             $table->rememberToken();
             $table->timestamps();
@@ -37,6 +38,7 @@ class CreateUsersTable extends Migration
                 'password' => Hash::make('testuser'),
                 'set_password' => '0',
                 'photo' => 'https://lh3.googleusercontent.com/a/AEdFTp7rSQSGBXSkojDEr3RPtMeLn-bWycFhAjSzRoFVSQ=s48-c-rp-br100',
+                'bio' => 'Ngentot lu!',
                 'type' => '0',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
