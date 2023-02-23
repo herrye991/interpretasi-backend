@@ -47,14 +47,14 @@ class ArticleController extends Controller
         }
         if (!is_null($trending)) {
             if ($trending == true) {
-                $articles = $articles->where('trending', '1')->orderBy('viewers', 'desc');
+                $articles = $articles->where('trending', '1');
             } elseif ($trending == false) {
-                $articles = $articles->where('trending', '0')->orderBy('viewers', 'desc');
+                $articles = $articles->where('trending', '0');
             }
         }
         if (!is_null($orderBy)) {
-            if ($orderBy == 'lastest') {
-                $articles = $articles->orderBy('created_at', 'desc');
+            if ($orderBy == 'latest') {
+                $articles = $articles->orderBy('articles.created_at', 'desc');
             }
             if ($orderBy == 'mostView') {
                 $articles = $articles->orderBy('viewers', 'desc');
