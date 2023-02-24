@@ -72,7 +72,7 @@ use App\Http\Controllers\v1\TestController;
             /** By Tag */
             Route::get('tag/{tag}', [ArticleController::class, 'tag']);
             /** Preview Count */
-            Route::post('{url}/preview', [ArticleController::class, 'preview']);
+            Route::post('{url}/view', [ArticleController::class, 'view']);
             /** Upload Image */
             Route::post('upload-image', [ArticleController::class, 'uploadImage']);
             /** Report */

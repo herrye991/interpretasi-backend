@@ -221,7 +221,7 @@ class ArticleController extends Controller
         return response()->json(['url' => Domain::base('assets/images/articles/contents/'. $filename)]);
     }
 
-    public function preview($url)
+    public function view($url)
     {
         $article = Article::where('url', $url)->firstOrFail();
         $article->update([
