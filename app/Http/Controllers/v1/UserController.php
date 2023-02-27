@@ -86,7 +86,7 @@ class UserController extends Controller
     {
         $articles = Article::with(['comments', 'likes']);
         if ($type == 'history') {
-            $articles = $articles->join('histories', 'histories.article_id', 'articles.id')->where('histories.user_id', $this->user->id)->select('articles.*')->orderBy('articles.updated_at', 'desc');
+            $articles = $articles->join('histories', 'histories.article_id', 'articles.id')->where('histories.user_id', $this->user->id)->select('articles.*')->orderBy('histories.updated_at', 'desc');
         } elseif ($type == 'drafted') {
             $articles = $articles->where('user_id', $this->user->id)->where('status', 'drafted')->orderBy('created_at', 'desc');
         } elseif ($type == 'moderated') {
