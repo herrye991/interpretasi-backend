@@ -29,9 +29,12 @@ class UserController extends Controller
 
     public function show ($id)
     {
-        $user = User::with(['articles' => function($query){
-            $query->select('id', 'user_id', 'category_id', 'url', 'title', 'image', 'viewers', 'created_at', 'updated_at')->withCount(['comments', 'likes']);
-        }])->where('id', $id)->firstOrFail();
+        $show = request()->show;
+        if ($show == 'articles') {
+            $articles = Article::where('user_id', $id)->orderBy('created_at', 'desc')->paginate(5);
+            return new ArticleIndex($articles);
+        }
+        $user = User::where('id', $id)->firstOrFail();
         return ResponseFormatter::success($user, 200, 200);
     }
     
