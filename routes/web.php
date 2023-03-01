@@ -13,14 +13,3 @@ use App\Http\Controllers\UserController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::group(['prefix' => 'account'], function ()
-{
-    Route::get('accept/{token}', [UserController::class, 'accept']);
-    Route::get('reset/{token}', [UserController::class, 'reset'])->name('reset');
-    Route::post('reset/{token}', [UserController::class, 'resetPost']);
-});
