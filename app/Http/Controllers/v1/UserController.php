@@ -34,6 +34,9 @@ class UserController extends Controller
             $articles = Article::where('user_id', $id)->orderBy('created_at', 'desc')->paginate(5);
             return new ArticleIndex($articles);
         }
+        if ($id == 'profile') {
+            return $this->getProfile();
+        }
         $user = User::where('id', $id)->withCount(['articles'])->firstOrFail();
         return ResponseFormatter::success($user, 200, 200);
     }
