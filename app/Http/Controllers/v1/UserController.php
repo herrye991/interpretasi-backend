@@ -37,13 +37,23 @@ class UserController extends Controller
         if ($id == 'profile') {
             return $this->getProfile();
         }
+        if ($id == 'check') {
+                return $this->check();
+        }
+        if ($id == 'articles') {
+                return $this->articles();
+        }
         $user = User::where('id', $id)->withCount(['articles'])->firstOrFail();
         return ResponseFormatter::success($user, 200, 200);
     }
     
     public function getProfile()
     {
-        return ResponseFormatter::success($this->user, 200, 200);
+        if (auth('api')->check()) {
+            return ResponseFormatter::success($this->user, 200, 200);
+        } else {
+            return response()->json(['message' => 'unauthenticated'], 403);
+        }
     }
 
     public function updateProfile(Request $request)
@@ -78,11 +88,15 @@ class UserController extends Controller
         return ResponseFormatter::success('Profile Updated!', 200, 200);
     }
 
-    public function articles(Article $article)
+    public function articles()
     {
-        $status = request()->status;
-        $articles = $article->with(['comments', 'likes'])->where('user_id', $this->user->id);
-        return new ArticleIndex($articles->orderBy('created_at', 'desc')->paginate(5));
+        if (auth('api')->check()) {
+            $status = request()->status;
+            $articles = Article::with(['comments', 'likes'])->where('user_id', $this->user->id);
+            return new ArticleIndex($articles->orderBy('created_at', 'desc')->paginate(5));
+        } else {
+            return response()->json(['message' => 'unauthenticated'], 403);
+        }
     }
 
     public function articlesType($type)
@@ -140,20 +154,24 @@ class UserController extends Controller
 
     public function check()
     {
-        if ($this->user->set_password == '0') {
-            $set_password = false;
+        if (auth('api')->check()) {
+            if ($this->user->set_password == '0') {
+                $set_password = false;
+            } else {
+                $set_password = true;
+            }
+            if (is_null($this->user->email_verified_at)) {
+                $email_verified = false;
+            } else {
+                $email_verified = true;
+            }
+            $response = [
+                'set_password' => $set_password,
+                'email_verified' => $email_verified
+            ];
+            return response()->json($response);
         } else {
-            $set_password = true;
+            return response()->json(['message' => 'unauthenticated'], 403);
         }
-        if (is_null($this->user->email_verified_at)) {
-            $email_verified = false;
-        } else {
-            $email_verified = true;
-        }
-        $response = [
-            'set_password' => $set_password,
-            'email_verified' => $email_verified
-        ];
-        return response()->json($response);
     }
 }
